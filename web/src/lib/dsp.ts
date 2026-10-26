@@ -376,3 +376,67 @@ export function modulatedDelay(input: Float32Array, delayAt: (n: number) => numb
   }
   return out;
 }
+
+// ---- Distorção (módulo 6) ---------------------------------------------------------------------
+
+export type ShaperKind = "hardClip" | "softClip" | "tanh" | "asymmetric";
+
+/** As curvas do exercício 22. */
+export function shape(kind: ShaperKind, x: number): number {
+  switch (kind) {
+    case "hardClip": return clamp(x, -1, 1);
+    case "softClip": return x >= 1 ? 1 : x <= -1 ? -1 : 1.5 * (x - (x * x * x) / 3);
+    case "tanh": return Math.tanh(x);
+    case "asymmetric": return x >= 0 ? Math.tanh(x) : 0.5 * Math.tanh(2 * x);
+  }
+}
+
+/** Passa-baixo FIR por janela (sinc com janela de Blackman). cutoff em fração do sample rate (0..0.5). */
+export function designLowpassFir(numTaps: number, cutoff: number): Float64Array {
+  const h = new Float64Array(numTaps);
+  const m = (numTaps - 1) / 2;
+  let sum = 0;
+  for (let i = 0; i < numTaps; i++) {
+    const t = i - m;
+    const sinc = t === 0 ? 2 * cutoff : Math.sin(TWO_PI * cutoff * t) / (Math.PI * t);
+    const w = 0.42 - 0.5 * Math.cos((TWO_PI * i) / (numTaps - 1)) + 0.08 * Math.cos((2 * TWO_PI * i) / (numTaps - 1));
+    h[i] = sinc * w;
+    sum += h[i];
+  }
+  for (let i = 0; i < numTaps; i++) h[i] /= sum;
+  return h;
+}
+
+/** Aplica uma função não-linear com oversampling de fator L (inteiro): interpolação FIR polifásica,
+    a função a L·fs, filtro FIR e decimação. Com L = 1 aplica a função diretamente. */
+export function oversampled(input: Float32Array, factor: number, fn: (x: number) => number): Float32Array {
+  if (factor <= 1) return input.map(fn);
+
+  const taps = 32 * factor + 1;
+  const h = designLowpassFir(taps, 0.45 / factor);
+  const n = input.length;
+  const up = new Float64Array(n * factor);
+
+  // Interpolação: só os coeficientes que caem em amostras não-nulas (as originais) contam
+  for (let j = 0; j < up.length; j++) {
+    let acc = 0;
+    for (let k = j % factor; k < taps; k += factor) {
+      const src = (j - k) / factor;
+      if (src >= 0 && src < n) acc += h[k] * input[src];
+    }
+    up[j] = fn(acc * factor);
+  }
+
+  // Filtro de decimação: só se calculam as amostras que ficam
+  const out = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    const j = i * factor + (taps - 1); // compensa o atraso dos dois filtros (≈ (taps−1)/factor amostras)
+    let acc = 0;
+    for (let k = 0; k < taps; k++) {
+      const s = j - k;
+      if (s >= 0 && s < up.length) acc += h[k] * up[s];
+    }
+    out[i] = acc;
+  }
+  return out;
+}

@@ -18,6 +18,10 @@ import { biquadPage } from "./biquad";
 import { svfPage } from "./svf";
 import { lfoPage } from "./lfo";
 import { chorusFlangerPage } from "./chorusFlanger";
+import { waveshapingPage } from "./waveshaping";
+import { bitcrushPage } from "./bitcrush";
+import { fftPage } from "./fft";
+import { oversamplingPage } from "./oversampling";
 
 export const pages: PageDef[] = [
   buffersPage,
@@ -36,4 +40,8 @@ export const pages: PageDef[] = [
   svfPage,
   lfoPage,
   chorusFlangerPage,
+  waveshapingPage,
+  bitcrushPage,
+  fftPage,
+  oversamplingPage,
 ];

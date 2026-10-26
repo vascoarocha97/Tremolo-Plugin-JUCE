@@ -49,7 +49,8 @@ private:
     juce::TextButton resetButton { juce::String::fromUTF8 ("Reiniciar áudio") };
 
     juce::Viewport parameterViewport;
-    std::unique_ptr<juce::AudioProcessorEditor> editor;
+    juce::Component parameterContent; // editor próprio do exercício (se houver) + parâmetros genéricos
+    std::unique_ptr<juce::AudioProcessorEditor> editor, genericEditor;
 
     ScopeComponent scope;
     SpectrumComponent spectrum;

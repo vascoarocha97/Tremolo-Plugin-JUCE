@@ -1,5 +1,7 @@
 #include "HostComponent.h"
 
+#include <learn_host/ExerciseAudioProcessor.h>
+
 namespace learn
 {
 namespace
@@ -81,18 +83,28 @@ HostComponent::HostComponent (std::unique_ptr<juce::AudioProcessor> processorToH
     addAndMakeVisible (resetButton);
 
     // ---- Parâmetros do exercício ---------------------------------------------------------------
+    // Editor próprio (exercícios com GUI) e/ou parâmetros genéricos. Os processadores dos exercícios
+    // de DSP (ExerciseAudioProcessor) mostram sempre os parâmetros; os do módulo 8 (plugins
+    // completos) têm a sua própria GUI.
     if (processor->hasEditor())
+    {
         editor.reset (processor->createEditorAndMakeActive());
-    else if (! processor->getParameters().isEmpty())
-        editor = std::make_unique<juce::GenericAudioProcessorEditor> (*processor);
+        parameterContent.addAndMakeVisible (*editor);
+    }
 
-    parametersLabel.setText (editor != nullptr ? juce::String::fromUTF8 ("Parâmetros")
-                                               : juce::String::fromUTF8 ("Este exercício não tem parâmetros."),
+    const auto isExercise = dynamic_cast<ExerciseAudioProcessor*> (processor.get()) != nullptr;
+
+    if (! processor->getParameters().isEmpty() && (editor == nullptr || isExercise))
+    {
+        genericEditor = std::make_unique<juce::GenericAudioProcessorEditor> (*processor);
+        parameterContent.addAndMakeVisible (*genericEditor);
+    }
+
+    parametersLabel.setText (editor != nullptr || genericEditor != nullptr ? juce::String::fromUTF8 ("Parâmetros")
+                                                                         : juce::String::fromUTF8 ("Este exercício não tem parâmetros."),
                              juce::dontSendNotification);
     addAndMakeVisible (parametersLabel);
-
-    if (editor != nullptr)
-        parameterViewport.setViewedComponent (editor.get(), false);
+    parameterViewport.setViewedComponent (&parameterContent, false);
 
     parameterViewport.setScrollBarsShown (true, false);
     addAndMakeVisible (parameterViewport);
@@ -138,6 +150,7 @@ HostComponent::~HostComponent()
     deviceManager.removeAudioCallback (&engine);
     deviceManager.closeAudioDevice();
     parameterViewport.setViewedComponent (nullptr, false);
+    genericEditor.reset();
     editor.reset();
 }
 
@@ -262,8 +275,9 @@ void HostComponent::timerCallback()
     if (sampleRate > 0.0)
     {
         const auto blockSize = engine.getBlockSize();
-        status << juce::String (sampleRate, 0) << " Hz  ·  bloco de " << blockSize << juce::String::fromUTF8 (" amostras (")
-               << juce::String (1000.0 * blockSize / sampleRate, 1) << " ms)  ·  CPU "
+        const auto dot = juce::String::fromUTF8 ("  ·  ");
+        status << juce::String (sampleRate, 0) << " Hz" << dot << "bloco de " << blockSize << " amostras ("
+               << juce::String (1000.0 * blockSize / sampleRate, 1) << " ms)" << dot << "CPU "
                << juce::String (100.0 * deviceManager.getCpuUsage(), 1) << " %";
     }
     else
@@ -333,13 +347,23 @@ void HostComponent::resized()
     parametersLabel.setBounds (left.removeFromTop (22));
     parameterViewport.setBounds (left);
 
+    // Editor próprio em cima (com o tamanho que pediu), parâmetros genéricos por baixo
+    const auto contentWidth = parameterViewport.getMaximumVisibleWidth();
+    int y = 0;
+
     if (editor != nullptr)
     {
-        if (processor->hasEditor())
-            editor->setTopLeftPosition (0, 0);
-        else
-            editor->setSize (parameterViewport.getMaximumVisibleWidth(), editor->getHeight());
+        editor->setTopLeftPosition (0, 0);
+        y = editor->getBottom() + 8;
     }
+
+    if (genericEditor != nullptr)
+    {
+        genericEditor->setBounds (0, y, contentWidth, genericEditor->getHeight());
+        y = genericEditor->getBottom();
+    }
+
+    parameterContent.setSize (juce::jmax (contentWidth, editor != nullptr ? editor->getWidth() : 0), y);
 
     area.removeFromLeft (10);
     meter.setBounds (area.removeFromRight (34));
