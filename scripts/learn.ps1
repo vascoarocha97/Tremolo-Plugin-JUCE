@@ -134,6 +134,15 @@ function Invoke-Build ([string[]] $Targets, [string] $Config)
     $exitCode = $LASTEXITCODE
     Write-Progress -Activity "A compilar" -Completed
 
+    # Um exercício novo (pasta nova) ainda não é um alvo conhecido: reconfigura e tenta outra vez.
+    if ($exitCode -ne 0 -and -not $script:Reconfigured -and ($output -match 'unknown target'))
+    {
+        $script:Reconfigured = $true
+        Write-Note "Alvo desconhecido: a reconfigurar o CMake (há exercícios novos?)"
+        Invoke-Configure -Force
+        return (Invoke-Build $Targets $Config)
+    }
+
     [IO.File]::WriteAllLines($log, $output)
 
     if ($exitCode -ne 0)
@@ -690,6 +699,7 @@ learn — plataforma para aprender JUCE e DSP
 $positional = @()
 $detailed = $false
 $script:ForceRelease = $false
+$script:Reconfigured = $false
 
 foreach ($a in $args)
 {
