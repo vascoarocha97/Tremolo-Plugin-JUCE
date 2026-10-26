@@ -33,14 +33,24 @@
     passam depois de o exercício de que dependem estar feito — testar as soluções sempre no worktree `solutions`.
   - Verificado no `solutions`: 26/26 exercícios passam; smoke test dos standalones 1–26 OK.
 
+- **Fase 6** ✔ — módulo 7 (reverb, 27–31: comb/allpass, Schroeder, FDN, difusor + FDN, shimmer) e
+  páginas `comb-allpass`, `reverb`, `fdn`, `shimmer` (blocos DSP em `web/src/lib/reverb.ts`).
+  Verificado no `solutions`: 31/31; smoke 27–31 OK.
+
+- **Fase 7** ✔ — módulo 8 (plugin real, 32–35: APVTS, estado/presets, editor com attachments, VST3) e
+  página `plugin-architecture`. `learn_add_plugin` (VST3 + Standalone do JUCE, fora do ALL); host com
+  estado persistente e caixa de presets. Verificado no `solutions`: 35/35; smoke 32–35 OK (o VST3
+  compila e o JUCE carrega-o para gerar o `moduleinfo.json`; o Standalone abre).
+
 ## Falta
 
-- Fases 6–9: módulos 7–10 (exercícios 27–40 + páginas da web app).
+- Módulos 9 (performance, 36–38) e 10 (pedal, 39–40) + páginas `performance` e `pedal`.
+- `SOURCES.md` completo; desvios no `PLAN.md`.
 - Revisão independente, teste de clone limpo, `READY.md`.
 
 ## Próximo passo
 
-Módulo 7 (reverb, exercícios 27–31) + páginas `comb-allpass`, `reverb`, `fdn`, `shimmer`.
+Módulo 9 (performance, exercícios 36–38, config Release) + página `performance`.
 
 ## Notas de trabalho (para quem retoma)
 
