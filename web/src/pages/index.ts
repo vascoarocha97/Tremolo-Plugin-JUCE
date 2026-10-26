@@ -16,6 +16,8 @@ import { feedbackDelayPage } from "./feedbackDelay";
 import { onePolePage } from "./onePole";
 import { biquadPage } from "./biquad";
 import { svfPage } from "./svf";
+import { lfoPage } from "./lfo";
+import { chorusFlangerPage } from "./chorusFlanger";
 
 export const pages: PageDef[] = [
   buffersPage,
@@ -32,4 +34,6 @@ export const pages: PageDef[] = [
   onePolePage,
   biquadPage,
   svfPage,
+  lfoPage,
+  chorusFlangerPage,
 ];

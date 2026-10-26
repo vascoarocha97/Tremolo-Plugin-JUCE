@@ -336,3 +336,43 @@ export function processSvf(input: Float32Array, sampleRate: number, q: number, m
   }
   return out;
 }
+
+// ---- Modulação (módulo 5) ---------------------------------------------------------------------
+
+export type LfoShape = "sine" | "triangle" | "saw" | "square";
+
+/** As formas do LFO do exercício 18 (fase em ciclos). */
+export function lfoValue(shape: LfoShape, phase: number): number {
+  const p = phase - Math.floor(phase);
+  switch (shape) {
+    case "sine": return Math.sin(TWO_PI * p);
+    case "triangle": return p < 0.25 ? 4 * p : p < 0.75 ? 2 - 4 * p : 4 * p - 4;
+    case "saw": return p < 0.5 ? 2 * p : 2 * p - 2;
+    case "square": return p < 0.5 ? 1 : -1;
+  }
+}
+
+/** Delay modulado com feedback e interpolação linear, um canal (chorus/flanger, exercícios 20–21).
+    delayAt(n) devolve o atraso em amostras (>= 1). Processa o loop duas vezes para não haver corte
+    na repetição. */
+export function modulatedDelay(input: Float32Array, delayAt: (n: number) => number, feedback: number, mix: number, maxDelay: number): Float32Array {
+  const size = Math.ceil(maxDelay) + 4;
+  const line = new Float32Array(size);
+  let w = 0;
+  const out = new Float32Array(input.length);
+  for (let pass = 0; pass < 2; pass++) {
+    for (let n = 0; n < input.length; n++) {
+      const d = Math.max(1, delayAt(n));
+      const whole = Math.floor(d);
+      const frac = d - whole;
+      // posição de escrita da próxima amostra é (w + 1); a amostra de há k passos está em w + 1 - k
+      const a = line[(w + 1 - whole + size * 4) % size];
+      const b = line[(w - whole + size * 4) % size];
+      const wet = a + frac * (b - a);
+      w = (w + 1) % size;
+      line[w] = input[n] + feedback * wet;
+      if (pass === 1) out[n] = (1 - mix) * input[n] + mix * wet;
+    }
+  }
+  return out;
+}

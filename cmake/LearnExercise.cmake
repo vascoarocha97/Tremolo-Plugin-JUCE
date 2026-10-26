@@ -6,6 +6,7 @@
 #       DSP_SOURCES   Processor.h Processor.cpp
 #       TEST_SOURCES  tests/ProcessorTests.cpp
 #       APP_SOURCES   app/ExerciseApp.cpp
+#       [DEPENDS      18 22]                    (exercícios anteriores cujo código este usa)
 #       [NO_APP])
 #
 # Alvos criados:
@@ -14,11 +15,16 @@
 #   ex03_app    standalone para ouvir o resultado (fora do ALL: ./learn run 03)
 #
 # Todos ligam a learn_juce_modules, por isso o JUCE é compilado uma única vez.
+#
+# DEPENDS: o código DSP deste exercício usa o TEU código de um exercício anterior (ex.: o tremolo
+# usa o LFO do 18). O header inclui-se com caminho relativo (#include "../18-lfo/Processor.h") e a
+# biblioteca liga-se com $<LINK_ONLY:...> para que os include dirs dos dois exercícios (ambos com um
+# Processor.h) não se misturem.
 
 function(learn_add_exercise)
     set(options NO_APP)
     set(one_value_args NUMBER WEB_PAGE)
-    set(multi_value_args DSP_SOURCES TEST_SOURCES APP_SOURCES)
+    set(multi_value_args DSP_SOURCES TEST_SOURCES APP_SOURCES DEPENDS)
     cmake_parse_arguments(ARG "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
     if(NOT ARG_NUMBER)
@@ -32,6 +38,10 @@ function(learn_add_exercise)
     add_library(${prefix}_dsp STATIC ${ARG_DSP_SOURCES})
     target_include_directories(${prefix}_dsp PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
     target_link_libraries(${prefix}_dsp PUBLIC learn_juce_modules)
+
+    foreach(dependency IN LISTS ARG_DEPENDS)
+        target_link_libraries(${prefix}_dsp PUBLIC "$<LINK_ONLY:ex${dependency}_dsp>")
+    endforeach()
     set_target_properties(${prefix}_dsp PROPERTIES FOLDER "exercises/${folder_name}")
 
     # ---- Testes --------------------------------------------------------------------------------
