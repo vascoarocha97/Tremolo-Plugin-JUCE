@@ -140,8 +140,9 @@ Para comparar a tua solução com a de referência de um exercício (só depois 
 git diff main solutions -- exercises/03-nyquist-aliasing
 ```
 
-O branch `solutions` existe neste repositório local (não foi feito `push`). Num clone feito a partir
-de um remoto que o tenha, usa `origin/solutions` no lugar de `solutions`.
+O branch `solutions` existe só no repositório local onde a plataforma foi construída (o GitHub tem
+só o `main`). Num clone feito a partir de um remoto que o tenha, usa `origin/solutions` no lugar de
+`solutions`.
 
 ## 8. Documentos do projeto
 

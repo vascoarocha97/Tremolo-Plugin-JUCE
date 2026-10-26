@@ -80,9 +80,9 @@ solução) ou `/explica <conceito>`. Pré-requisitos e detalhes: `README.md`.
 
 ## O que não fiz (de propósito) e recomendo
 
-- **Não fiz `git push`.** O `origin` tem só o commit inicial; o `main` e o `solutions` existem só aqui.
-  Quando quiseres: `git push origin main solutions` (ou só `main`, se não quiseres as soluções no
-  GitHub).
+- **Push**: o `main` está no GitHub (`origin`, a teu pedido, a 2026-10-26). O branch `solutions`
+  **não** foi enviado: existe só neste repositório local. Se um dia o quiseres no remoto:
+  `git push origin solutions` (fica visível a quem tiver acesso ao repositório).
 - **Permissões do Claude Code**: para reforçar a regra "não ler as soluções", podes acrescentar ao
   `.claude/settings.json` regras `permissions.deny` para `git show solutions*`, `git diff*solutions*`
   e `git checkout solutions*`. Não o fiz porque mexer em permissões é decisão tua.
