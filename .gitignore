@@ -1,6 +1,9 @@
 .DS_Store
 .vs
-.vscode
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
 libs/
 build/
 xcode-build/
@@ -463,3 +466,12 @@ FodyWeavers.xsd
 # IntelliJ
 .idea
 **/cmake-build*
+
+# --- Learn JUCE ---
+# estado local do aluno (gerado por ./learn check)
+progress.json
+# web app
+web/node_modules/
+web/dist/
+# definições locais do Claude Code
+.claude/settings.local.json

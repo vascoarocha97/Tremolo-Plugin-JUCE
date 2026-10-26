@@ -1,0 +1,17 @@
+# Aproximação ao estilo de código do JUCE (o .clang-format da raiz é do curso do tremolo).
+---
+Language: Cpp
+BasedOnStyle: LLVM
+IndentWidth: 4
+ColumnLimit: 120
+BreakBeforeBraces: Allman
+SpaceBeforeParens: NonEmptyParentheses
+AccessModifierOffset: -4
+PointerAlignment: Left
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AlignTrailingComments: true
+NamespaceIndentation: None
+SortIncludes: Never
+...

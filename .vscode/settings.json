@@ -1,0 +1,19 @@
+{
+  "cmake.configureOnOpen": false,
+  "cmake.configureOnEdit": false,
+  "cmake.automaticReconfigure": false,
+
+  "cmake.sourceDirectory": "${workspaceFolder}",
+  "cmake.useCMakePresets": "always",
+  "cmake.ctest.testExplorerIntegrationEnabled": true,
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+
+  "files.encoding": "utf8",
+  "files.exclude": {
+    "build": true
+  },
+  "search.exclude": {
+    "build": true,
+    "web/node_modules": true
+  }
+}

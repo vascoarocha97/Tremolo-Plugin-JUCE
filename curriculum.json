@@ -1,0 +1,147 @@
+{
+  "juceVersion": "9.0.4",
+  "modules": [
+    {
+      "id": 1,
+      "title": "Fundamentos",
+      "exercises": [
+        { "id": "01", "folder": "01-first-buffer", "title": "O primeiro buffer", "minutes": 5, "web": "buffers",
+          "summary": "AudioBuffer: canais × amostras; aplicar um ganho fixo e encontrar o pico." },
+        { "id": "02", "folder": "02-sine-oscillator", "title": "Oscilador sinusoidal", "minutes": 15, "web": "sampling",
+          "summary": "Sample rate e fase: um acumulador de fase contínuo entre blocos." },
+        { "id": "03", "folder": "03-nyquist-aliasing", "title": "Nyquist e aliasing", "minutes": 20, "web": "nyquist-aliasing",
+          "summary": "Frequência de alias (folding) e um dente de serra ingénuo que a demonstra." },
+        { "id": "04", "folder": "04-bit-depth", "title": "Bit depth e quantização", "minutes": 25, "web": "bit-depth",
+          "summary": "Quantizar para N bits, medir o SNR (≈ 6.02N + 1.76 dB) e usar dither TPDF." },
+        { "id": "05", "folder": "05-realtime-rules", "title": "Regras de tempo-real", "minutes": 25, "web": "realtime",
+          "summary": "Corrigir um processador que aloca, bloqueia e escreve logs na thread de áudio." }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Ganho, dB, pan e smoothing",
+      "exercises": [
+        { "id": "06", "folder": "06-decibels", "title": "Decibéis", "minutes": 15, "web": "decibels",
+          "summary": "dB ↔ ganho linear com piso de −∞; comparar com juce::Decibels." },
+        { "id": "07", "folder": "07-pan-laws", "title": "Leis de pan", "minutes": 20, "web": "pan-laws",
+          "summary": "Pan linear, de potência constante (−3 dB) e de compromisso (−4.5 dB)." },
+        { "id": "08", "folder": "08-parameter-smoothing", "title": "Parameter smoothing", "minutes": 30, "web": "smoothing",
+          "summary": "Porque é que mudar um ganho de repente faz um click; rampa linear por amostra." },
+        { "id": "09", "folder": "09-smoothed-gain", "title": "Ganho suave e thread-safe", "minutes": 30, "web": "smoothing",
+          "summary": "juce::SmoothedValue, std::atomic entre threads e a convenção juce::dsp." }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Delay",
+      "exercises": [
+        { "id": "10", "folder": "10-circular-buffer", "title": "Buffer circular", "minutes": 30, "web": "delay-line",
+          "summary": "Uma delay line inteira com buffer circular: exatamente N amostras." },
+        { "id": "11", "folder": "11-fractional-delay", "title": "Delay fracionário", "minutes": 30, "web": "fractional-delay",
+          "summary": "Interpolação linear para atrasos que não são um número inteiro de amostras." },
+        { "id": "12", "folder": "12-feedback-echo", "title": "Eco com feedback", "minutes": 30, "web": "feedback-delay",
+          "summary": "Feedback, dry/wet e estabilidade." },
+        { "id": "13", "folder": "13-pingpong-delayline", "title": "Ping-pong com juce::dsp::DelayLine", "minutes": 30, "web": "feedback-delay",
+          "summary": "Usar a DelayLine do JUCE para um delay estéreo ping-pong." }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Filtros",
+      "exercises": [
+        { "id": "14", "folder": "14-one-pole", "title": "Filtro de um polo", "minutes": 30, "web": "one-pole",
+          "summary": "Passa-baixo e passa-alto de um polo; constante de tempo." },
+        { "id": "15", "folder": "15-biquad-rbj", "title": "Biquad (Audio EQ Cookbook)", "minutes": 45, "web": "biquad",
+          "summary": "Biquad TDF-II com os coeficientes do Audio EQ Cookbook (RBJ)." },
+        { "id": "16", "folder": "16-svf-tpt", "title": "State Variable Filter (TPT)", "minutes": 45, "web": "svf",
+          "summary": "SVF topology-preserving (Zavalishin/Simper), estável com modulação rápida." },
+        { "id": "17", "folder": "17-juce-dsp-chain", "title": "Cadeias juce::dsp", "minutes": 40, "web": "biquad",
+          "summary": "ProcessorChain, ProcessorDuplicator e coeficientes atualizados sem alocar." }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Modulação",
+      "exercises": [
+        { "id": "18", "folder": "18-lfo", "title": "LFO", "minutes": 30, "web": "lfo",
+          "summary": "Oscilador de baixa frequência com várias formas de onda." },
+        { "id": "19", "folder": "19-tremolo", "title": "Tremolo", "minutes": 25, "web": "lfo",
+          "summary": "Modulação de amplitude com profundidade e fase estéreo." },
+        { "id": "20", "folder": "20-chorus", "title": "Chorus", "minutes": 40, "web": "chorus-flanger",
+          "summary": "Delay modulado por um LFO, com interpolação." },
+        { "id": "21", "folder": "21-flanger", "title": "Flanger", "minutes": 40, "web": "chorus-flanger",
+          "summary": "Filtro pente modulado, com feedback." }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Distorção",
+      "exercises": [
+        { "id": "22", "folder": "22-waveshaper", "title": "Waveshaper", "minutes": 30, "web": "waveshaping",
+          "summary": "Hard clip, soft clip, tanh e assimetria: que harmónicos aparecem." },
+        { "id": "23", "folder": "23-fuzz", "title": "Fuzz", "minutes": 40, "web": "waveshaping",
+          "summary": "Uma cadeia de fuzz: pré-ênfase, clip assimétrico, DC blocker e tom." },
+        { "id": "24", "folder": "24-bitcrusher", "title": "Bitcrusher", "minutes": 30, "web": "bitcrush",
+          "summary": "Redução de bits e de sample rate (sample & hold)." },
+        { "id": "25", "folder": "25-measuring-aliasing", "title": "Medir aliasing com FFT", "minutes": 45, "web": "fft",
+          "summary": "FFT, janelas e uma medida de aliasing." },
+        { "id": "26", "folder": "26-oversampling", "title": "Oversampling", "minutes": 45, "web": "oversampling",
+          "summary": "juce::dsp::Oversampling à volta do waveshaper; latência." }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Reverb",
+      "exercises": [
+        { "id": "27", "folder": "27-comb-allpass", "title": "Comb e allpass", "minutes": 40, "web": "comb-allpass",
+          "summary": "Os dois blocos clássicos da reverb artificial." },
+        { "id": "28", "folder": "28-schroeder-reverb", "title": "Reverb de Schroeder", "minutes": 45, "web": "reverb",
+          "summary": "Combs em paralelo + allpasses em série; RT60." },
+        { "id": "29", "folder": "29-fdn", "title": "Feedback Delay Network", "minutes": 60, "web": "fdn",
+          "summary": "FDN com matriz de Householder." },
+        { "id": "30", "folder": "30-diffuser-reverb", "title": "Difusor + FDN", "minutes": 60, "web": "fdn",
+          "summary": "Difusão multicanal (Hadamard) antes da FDN." },
+        { "id": "31", "folder": "31-shimmer", "title": "Shimmer", "minutes": 60, "web": "shimmer",
+          "summary": "Pitch shift por delay no ciclo de feedback de uma reverb." }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Plugin real",
+      "exercises": [
+        { "id": "32", "folder": "32-apvts-parameters", "title": "Parâmetros com APVTS", "minutes": 40, "web": "plugin-architecture",
+          "summary": "AudioProcessorValueTreeState, ParameterLayout e ParameterID versionado." },
+        { "id": "33", "folder": "33-state-and-presets", "title": "Estado e presets", "minutes": 45, "web": "plugin-architecture",
+          "summary": "getStateInformation/setStateInformation e presets." },
+        { "id": "34", "folder": "34-editor-attachments", "title": "Editor e attachments", "minutes": 45, "web": "plugin-architecture",
+          "summary": "GUI básica ligada aos parâmetros com attachments." },
+        { "id": "35", "folder": "35-vst3-plugin", "title": "Plugin VST3", "minutes": 60, "web": "plugin-architecture",
+          "summary": "juce_add_plugin, bus layouts, bypass, latência e VST3.",
+          "runTargets": ["ex35_plugin_Standalone", "ex35_plugin_VST3"] }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Performance e otimização",
+      "exercises": [
+        { "id": "36", "folder": "36-measuring-cpu", "title": "Medir CPU", "minutes": 40, "web": "performance", "config": "Release",
+          "summary": "Medir o tempo por bloco contra o orçamento de tempo-real." },
+        { "id": "37", "folder": "37-simd", "title": "SIMD", "minutes": 45, "web": "performance", "config": "Release",
+          "summary": "FloatVectorOperations e juce::dsp::SIMDRegister." },
+        { "id": "38", "folder": "38-avoid-work", "title": "Evitar trabalho", "minutes": 40, "web": "performance", "config": "Release",
+          "summary": "Denormais, recalcular só quando muda, silêncio." }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Projeto final: pedal",
+      "exercises": [
+        { "id": "39", "folder": "39-glitch", "title": "Glitch", "minutes": 60, "web": "pedal",
+          "summary": "Stutter / beat-repeat com crossfades sem clicks." },
+        { "id": "40", "folder": "40-pedal", "title": "O pedal", "minutes": 300, "web": "pedal",
+          "summary": "Fuzz + crush + glitch + reverb, escrito do zero, como plugin VST3.",
+          "runTargets": ["ex40_pedal_Standalone", "ex40_pedal_VST3"] }
+      ]
+    }
+  ]
+}

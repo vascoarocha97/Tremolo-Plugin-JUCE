@@ -1,88 +1,148 @@
-<div align="center">
+# Learn JUCE — aprender JUCE e DSP de áudio a fundo
 
-# Tremolo Audio Plugin
+Plataforma para aprender o que se passa "under the hood" num plugin de áudio: amostras, buffers,
+sample rate, bit depth, filtros, delays, modulação, distorção, aliasing, oversampling, reverb, e
+depois o plugin real (parâmetros, estado, GUI, VST3), performance e um projeto final.
 
-[![License](https://img.shields.io/badge/license-Unlicense-blue.svg)](LICENSE.md)
-![Build Status](https://github.com/juce-framework/tremolo-juce-course/actions/workflows/cmake.yml/badge.svg)
-![CMake](https://img.shields.io/badge/CMake-3.25+-064F8C.svg?logo=cmake)
-![C++](https://img.shields.io/badge/C++-23-00599C.svg?logo=cplusplus)
-![JUCE](https://img.shields.io/badge/JUCE-8.0.10-orange.svg)
-![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey.svg)
+Duas partes no mesmo repositório:
 
-<img alt="Tremolo user interface" src="docs/UI.png" width="512px">
+1. **Exercícios C++/JUCE** (`exercises/`) — 40 exercícios pequenos e progressivos. Cada um tem uma
+   lição (`README.md`), código com `// TODO` para completares, testes que verificam o resultado com
+   buffers offline e um standalone para ouvires o que escreveste.
+2. **Web app de teoria** (`web/`) — uma página interativa por conceito (com som), ligada às lições,
+   que mostra o teu progresso.
 
-Tremolo audio plugin project used for the [Official JUCE Audio Plugin Development Course](https://www.wolfsoundacademy.com/juce) 🎓
+**Versão do JUCE: 9.0.4** (fixada por tag em `cmake/LearnDependencies.cmake`; ver `PLAN.md`).
+Catch2 v3.16.1 para os testes. Tudo o resto em `PLAN.md` e `DECISIONS.md`.
 
-![JUCE audio plugin development course logo](docs/JUCE_Course_logo.svg)
+---
 
-</div>
+## 1. O que instalar (Windows)
 
-## ✨ Features
+| Ferramenta | Versão | Notas |
+|---|---|---|
+| **Visual Studio 2022** (Community chega) ou **Build Tools for Visual Studio 2022** | 17.10 ou mais recente (testado com 17.14) | Workload **"Desktop development with C++"**. Garante que estão marcados: *MSVC v143*, *Windows 11 SDK* e **"C++ CMake tools for Windows"** (traz o CMake e o **Ninja**). |
+| **Git for Windows** | qualquer recente | https://git-scm.com/download/win |
+| **CMake** | ≥ 3.25 | Já vem com o Visual Studio (3.31). Se instalares à parte (https://cmake.org/download), também serve (testado com 4.4). |
+| **VS Code** | recente | Extensões: **CMake Tools** (`ms-vscode.cmake-tools`) e **C/C++** (`ms-vscode.cpptools`). O repositório recomenda-as automaticamente. |
+| **Node.js LTS** | ≥ 20 (testado com 24) | Só para a web app. https://nodejs.org |
 
-* Preconfigured plugin formats:
-  * AU
-  * VST3
-  * Standalone
-* Tremolo audio effect: tremolo is amplitude modulation at a rate below the human hearing range. The result is a "pulsing" sound.
-* Parameters
-  * modulation rate
-  * LFO waveform
-  * bypass
-* Real-time LFO visualization
-* Custom UI
-* State serialization
-* Template *README.txt* for distribution
-* Configured GitHub Actions CI pipeline
-* Unit tests using [googletest](https://github.com/google/googletest)
-* CMake presets, including "release"
-* Automatic dependency downloading using [CPM](https://github.com/cpm-cmake/CPM.cmake)
-* Helper *.clang-format*, *.clang-tidy*, and *.pre-commit-config.yaml* configuration files
+Não precisas de abrir o "Developer PowerShell": o comando `learn` encontra o Visual Studio com o
+`vswhere` e ativa o ambiente do compilador sozinho.
 
-## 📋 Requirements
+## 2. Primeiros passos
 
-You need to have the following software installed your machine:
+```powershell
+git clone <url-do-teu-repositório> "Learn JUCE"
+cd "Learn JUCE"
+./learn check 01
+```
 
-* Git version control system
-* CMake 3.25 or higher (the one bundled with CLion 2025.1.1 or higher should work)
-* C++ compiler and build system. Tested on:
-  * macOS: Xcode 15.4 (Apple Clang 15.0.0.15000309), 16.4 (Apple Clang 17.0.0.17000013)
-  * Windows: Visual Studio 2022 17.14.13 (MSVC 19.44.35215)
-  * Ubuntu, Debian: gcc 12.2.0, 13.3.0 and make 4.3
+A primeira execução:
+1. configura o CMake com o preset `default` (Ninja Multi-Config + MSVC x64);
+2. descarrega o JUCE 9.0.4 e o Catch2 para `build/_deps` (alguns minutos, depende da ligação);
+3. compila os módulos do JUCE **uma única vez** numa biblioteca estática (~2–4 min em Debug);
+4. compila e corre os testes do exercício 01 — que **falham** até completares os TODOs.
 
-## 🚀 Getting Started
+Depois:
 
-**Detailed instructions on the setup process [are described in the course.](https://www.wolfsoundacademy.com/juce)**
+```powershell
+./learn run 01      # abre o standalone do exercício 01
+./learn web         # web app em http://localhost:5173 (instala as dependências na 1.ª vez)
+```
 
-1. Click “Use this template” on GitHub to create your own copy and begin your project.
-2. Clone **your repository** locally.
-3. Build the *complete/* plugin
-   1. Open the *complete/* folder in CLion, or
-   2. In the main repo directory execute
+## 3. Comandos
 
-      ```bash
-      cd complete
-      cmake --preset default
-      cmake --build --preset default
-      ```
+| Comando | O que faz |
+|---|---|
+| `./learn check 03` | compila e corre os testes do exercício 03, mostra o resultado e atualiza `progress.json` |
+| `./learn check all` | o mesmo para todos os exercícios, com um resumo no fim |
+| `./learn check 03 -v` | mostra também o output completo do Catch2 |
+| `./learn run 03` | compila e abre o standalone do exercício 03 |
+| `./learn web` | arranca a web app de teoria |
+| `./learn list` | currículo com o estado de cada exercício |
+| `./learn smoke 03` | abre o standalone ~3 s e verifica que sai som (usado na autoverificação) |
 
-The first build will take the most time because the dependencies (CPM and JUCE) need to be downloaded.
+Funciona no PowerShell (`./learn` resolve para `learn.cmd`) e no Git Bash (`./learn`).
+O `learn.cmd` chama `scripts/learn.ps1` com `-ExecutionPolicy Bypass` só para esse processo, porque
+no Windows a política de execução por omissão bloqueia scripts `.ps1`.
 
-Build artifacts will be located at *complete/cmake-build/TremoloCoursePlugin_artefacts/Debug*.
+## 4. Fluxo de trabalho num exercício
 
-## 📂 Structure
+1. Lê `exercises/NN-nome/README.md` (a lição) e abre a visualização indicada na web app.
+2. Abre `Processor.h` / `Processor.cpp` e completa os `// TODO`.
+3. `./learn check NN` até tudo passar. Lê as mensagens: dizem o valor obtido e o esperado.
+4. `./learn run NN` e ouve. O standalone tem fonte de teste (loop, seno, varrimento, ruído, impulsos,
+   ficheiro ou entrada da placa), **Bypass (A/B)**, osciloscópio, espectro (entrada a cinzento, saída a
+   azul) e um **limitador de proteção** (corta acima de 0 dBFS e silencia NaN/inf).
+5. Encravado? No Claude Code: `/tutor NN` (pistas por níveis, sem dar a solução) ou
+   `/explica <conceito>`.
 
-This repository is a template. Click “Use this template” on GitHub to create your own copy and begin your project.
+## 5. Abrir no VS Code
 
-The plugin project is present in two folders:
+1. `File → Open Folder...` e escolhe a pasta do repositório.
+2. Aceita instalar as extensões recomendadas.
+3. Na barra do CMake Tools escolhe o *configure preset* **"MSVC x64 (Ninja Multi-Config)"**
+   (o CMake Tools ativa o ambiente do Visual Studio a partir do preset) e corre **CMake: Configure**.
+4. Escolhe o *build preset* `debug` e o alvo, por exemplo `ex03_tests` ou `ex03_app`, e **Build**.
+5. Os testes aparecem no painel **Testing** do VS Code (via CTest).
+6. Para depurar: seleciona o *launch target* no CMake Tools e usa a configuração
+   "Depurar alvo selecionado (CMake)" (F5).
 
-* *complete/* contains the completed tremolo plugin project. It compiles and runs out of the box.
-* *todo/* contains skeleton code of the same plugin. This is the code you will work on throughout the course to gradually bring it to the same state as the *complete/* folder. In its default state, it does not compile.
+O `./learn` e o VS Code partilham a mesma pasta `build/`.
 
-## 🤝 Contributing
+## 6. Estrutura
 
-* If you find a bug, please, open an issue and/or provide a pull request.
-* Feature requests won't be merged because the goal of the repository is to be educational not feature-full.
+```
+exercises/NN-nome/
+  README.md            a lição (teoria, porquê, armadilhas, "Para saber mais")
+  Processor.h/.cpp     o teu código, com // TODO
+  tests/               testes Catch2 offline (não precisam de placa de som)
+  app/ExerciseApp.cpp  liga o teu processador ao standalone (não precisas de mexer)
+shared/testing/        helpers de teste: sinais, medições, deteção de alocações
+shared/host/           o standalone partilhado
+cmake/                 dependências, biblioteca única do JUCE, learn_add_exercise()
+web/                   web app (Vite + TypeScript)
+curriculum.json        o currículo (usado pelo learn, pelo CMake e pela web app)
+```
 
-## 📜 License
+Alvos CMake de cada exercício: `exNN_dsp` (o teu código DSP), `exNN_tests` (testes, compilam só o
+DSP) e `exNN_app` (standalone). Todos ligam à biblioteca `learn_juce_modules`, por isso o JUCE é
+compilado uma vez. Exceção: os exercícios 35 e 40 geram um VST3 com `juce_add_plugin`, que compila o
+JUCE com as definições do plugin (ver `DECISIONS.md`).
 
-We use the incredibly liberal ["Unlicense" license](LICENSE.md). You can basically do whatever you want with the code. Remember that the commercial use of products built with JUCE requires a JUCE license. Refer to the JUCE license for details.
+## 7. Branches e soluções
+
+- `main` — os exercícios com `TODO`. É aqui que trabalhas.
+- `solutions` — soluções de referência, nos mesmos ficheiros. **Não está no `main`, nem no histórico.**
+
+Para comparar a tua solução com a de referência de um exercício (só depois de o fazeres!):
+
+```powershell
+git diff main solutions -- exercises/03-nyquist-aliasing
+```
+
+## 8. Documentos do projeto
+
+| Ficheiro | Conteúdo |
+|---|---|
+| `PLAN.md` | estrutura, stack, currículo detalhado, fontes por módulo |
+| `DECISIONS.md` | decisões tomadas e porquê |
+| `PROGRESS.md` | estado da construção da plataforma |
+| `SOURCES.md` | todas as fontes usadas, por módulo, e licenças |
+| `CLAUDE.md` | regras do modo tutor para o Claude Code |
+| `READY.md` | resumo final: como começar, o que foi construído, limitações |
+
+## 9. Curso do tremolo (pré-existente)
+
+As pastas `complete/` e `todo/` são o projeto do curso oficial do JUCE (tremolo), que já estava neste
+repositório. Não fazem parte desta plataforma, não são compiladas pelo `CMakeLists.txt` da raiz e
+não foram alteradas. O README original está em `TREMOLO_COURSE_README.md`.
+
+## 10. Licenças
+
+- O JUCE é distribuído sob **AGPLv3** ou sob a licença comercial do JUCE 9
+  (https://juce.com/legal/juce-9-licence/). Para distribuir plugins de código fechado precisas de
+  uma licença adequada — vê https://juce.com/get-juce.
+- Catch2: Boost Software License 1.0.
+- Fontes e código de terceiros referenciados: ver `SOURCES.md`.
