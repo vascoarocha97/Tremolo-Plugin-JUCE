@@ -144,8 +144,18 @@ TEST_CASE ("Tudo desligado: um impulso sai na posição da latência reportada, 
     REQUIRE (std::abs (peakIndex (buffer, 0) - (100 + latency)) <= 1);
     REQUIRE (std::abs (buffer.getSample (0, peakIndex (buffer, 0))) > 0.7f);
 
+    // Com o fuzz ligado (preparado de novo e a processar), a latência e a posição do impulso são as
+    // mesmas. Drive 0 dB e um impulso pequeno: o fuzz quase não o deforma.
     set (p, "fuzz_on", 1.0f);
+    set (p, "fuzz_drive", 0.0f);
+    set (p, "fuzz_tone", 12000.0f);
+    p.prepareToPlay (fs, 512);
     REQUIRE (p.getLatencySamples() == latency);
+
+    auto withFuzz = makeImpulse (2, 9600, 100, 0.01f);
+    processAll (p, withFuzz);
+    REQUIRE (p.getLatencySamples() == latency);
+    REQUIRE (std::abs (peakIndex (withFuzz, 0) - (100 + latency)) <= 2);
 }
 
 TEST_CASE ("Fuzz: harmónicos quando ligado, e aliasing baixo (oversampling)", "[40]")
@@ -231,7 +241,8 @@ TEST_CASE ("Glitch: ligado, a saída fica periódica com período = fatia", "[40
     p.prepareToPlay (fs, 480);
 
     auto buffer = makeNoise (2, 72000, 0.5f);
-    processRange (p, buffer, 0, 24000);
+    for (int start = 0; start < 24000; start += 480)
+        processRange (p, buffer, start, 480);
     set (p, "glitch_on", 1.0f);
     for (int start = 24000; start < 72000; start += 480)
         processRange (p, buffer, start, 480);
@@ -278,7 +289,8 @@ TEST_CASE ("Bypass: depois do crossfade, a entrada atrasada pela latência (sem 
 
     const auto input = makeSine (2, 48000, 220.0, fs, 0.5f);
     auto buffer = copyOf (input);
-    processRange (p, buffer, 0, 24000);
+    for (int start = 0; start < 24000; start += 480)
+        processRange (p, buffer, start, 480);
     set (p, "bypass", 1.0f);
     for (int start = 24000; start < 48000; start += 480)
         processRange (p, buffer, start, 480);

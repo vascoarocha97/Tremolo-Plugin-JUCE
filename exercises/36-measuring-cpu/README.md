@@ -58,6 +58,13 @@ referência. O teste mostra os tempos das duas versões quando falha.
 Em `Processor.cpp`: **TODO(1)** `CpuLoadMeter::addMeasurement`, **TODO(2)** `ScopedMeasurement`,
 **TODO(3)** `FastDriveFilter::process`.
 
+## Nota sobre as medições
+
+Os testes de velocidade assumem as opções de vírgula flutuante por omissão do MSVC (`/fp:precise`,
+as deste projeto). Com `/fp:fast` (ou `-ffast-math` noutros compiladores) o compilador pode, sozinho,
+tirar contas do ciclo ou vetorizar somas — a versão de referência fica mais rápida e a comparação
+deixa de dizer respeito ao teu código.
+
 ## Armadilhas comuns
 
 - **Medir em Debug** e tirar conclusões.

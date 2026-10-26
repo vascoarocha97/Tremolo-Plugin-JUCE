@@ -81,7 +81,7 @@ export const onePolePage: PageDef = {
 
     root.append(
       el("h2", {}, "1. Resposta ao degrau"),
-      p("A entrada salta de 0 para 1. A saída aproxima-se exponencialmente: ao fim de uma constante de tempo τ = 1/(2π·fc) está a 63.2%. A curva grossa cinzenta é o circuito RC analógico — com a = 1 − e^(−2π·fc/fs) as amostras caem exatamente em cima dela."),
+      p("A entrada salta de 0 para 1. A saída aproxima-se exponencialmente: ao fim de uma constante de tempo τ = 1/(2π·fc) está a 63.2%. A curva grossa cinzenta é o circuito RC analógico — com a = 1 − e^(−2π·fc/fs) as amostras caem em cima dela, adiantadas uma amostra (a amostra n já leva n + 1 passos, por isso está desenhada em (n + 1)·T)."),
       panel(
         step.canvas,
         legend([

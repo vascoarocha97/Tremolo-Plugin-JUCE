@@ -15,8 +15,8 @@ Regra 2: fontes verificadas).
 ## Passos
 
 1. **Situa o conceito no curso.** Procura em `curriculum.json` e nos `exercises/*/README.md` onde o
-   conceito aparece (pode ser mais do que um exercício) e em que página da web app
-   (`web/src/pages/`). Diz em que exercício(s) é usado e o que o aluno já devia saber antes.
+   conceito aparece (pode ser mais do que um exercício) e em que página da web app (o `id` da
+   página está no `curriculum.json`, campo `web`; **não** leias o código em `web/src/` — é spoiler). Diz em que exercício(s) é usado e o que o aluno já devia saber antes.
 
 2. **Explica por camadas:**
    - **Intuição** — uma imagem mental ou analogia (de preferência ligada a jogos/áudio, se fizer sentido).

@@ -27,6 +27,7 @@ juce::StringArray TestSignalSource::getSourceNames()
 void TestSignalSource::prepare (double newSampleRate, int)
 {
     sampleRate = newSampleRate;
+    preparedSampleRate = newSampleRate;
     phase = 0.0;
     sweepTime = 0.0;
     clickCounter = 0;
@@ -215,11 +216,13 @@ bool TestSignalSource::loadFile (const juce::File& file, juce::String& errorMess
         static_cast<int> (juce::jmin (reader->numChannels, 2u)), length);
     reader->read (newBuffer.get(), 0, length, 0, true, newBuffer->getNumChannels() > 1);
 
+    std::unique_ptr<juce::AudioBuffer<float>> oldPlayback; // libertado fora do lock
+
     {
         const juce::SpinLock::ScopedLockType lock (fileLock);
         std::swap (fileOriginal, newBuffer);
         fileOriginalRate = reader->sampleRate;
-        filePlayback.reset();
+        std::swap (oldPlayback, filePlayback);
         filePosition = 0;
         fileName = file.getFileName();
     }
@@ -249,7 +252,7 @@ void TestSignalSource::resampleFileIfNeeded()
     }
 
     // Conversão de sample rate offline (interpolação de Lagrange, 4 pontos)
-    const auto ratio = originalRate / sampleRate;
+    const auto ratio = originalRate / preparedSampleRate.load();
     // (-4: o interpolador de Lagrange precisa de algumas amostras de margem no fim)
     const auto outLength = juce::jmax (0, static_cast<int> (original->getNumSamples() / ratio) - 4);
     resampled = std::make_unique<juce::AudioBuffer<float>> (original->getNumChannels(), outLength);

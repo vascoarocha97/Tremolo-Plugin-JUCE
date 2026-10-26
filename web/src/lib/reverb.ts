@@ -1,5 +1,7 @@
-// Blocos de reverb (módulo 7) em TypeScript, com o mesmo comportamento dos exercícios 27–31.
-// Servem para as visualizações e para ouvir no browser; não são as soluções em C++.
+// ⚠ SPOILER: este ficheiro implementa, em TypeScript, a mesma matemática que os exercícios C++ pedem
+//   (é o que alimenta as visualizações e o som das páginas). Ler este código antes de fazeres o
+//   exercício correspondente é equivalente a ver a solução. Usa as páginas no browser, não o código.
+// Blocos de reverb (módulo 7) em TypeScript, para as visualizações e para ouvir no browser.
 
 import { seededRandom } from "./dsp";
 
@@ -8,7 +10,7 @@ export function feedbackForRt60(delaySamples: number, sampleRate: number, rt60: 
   return Math.pow(0.001, delaySamples / (Math.max(0.01, rt60) * sampleRate));
 }
 
-/** Pente com feedback e passa-baixo de um polo no ciclo (exercício 27). */
+/** Pente com feedback e passa-baixo de um polo no ciclo. */
 export class Comb {
   private readonly buffer: Float32Array;
   private index = 0;
@@ -31,7 +33,7 @@ export class Comb {
   }
 }
 
-/** Allpass de Schroeder verdadeiro (exercício 27). */
+/** Allpass de Schroeder verdadeiro. */
 export class Allpass {
   private readonly buffer: Float32Array;
   private index = 0;
@@ -49,7 +51,7 @@ export class Allpass {
   }
 }
 
-// ---- Schroeder / Freeverb (exercício 28) ------------------------------------------------------
+// ---- Schroeder / Freeverb ------------------------------------------------------
 
 export const combTunings = [1116, 1188, 1277, 1356, 1422, 1491, 1557, 1617];
 export const allpassTunings = [556, 441, 341, 225];
@@ -84,7 +86,7 @@ export class SchroederReverb {
   }
 }
 
-// ---- FDN (exercício 29) -------------------------------------------------------------------------
+// ---- FDN -------------------------------------------------------------------------
 
 export const fdnSize = 8;
 export const fdnDelaysMs = [101.3, 113.9, 127.1, 139.7, 151.1, 163.3, 179.9, 197.3];
@@ -154,7 +156,7 @@ export function downmix(out: ArrayLike<number>): [number, number] {
   return [l * s, r * s];
 }
 
-// ---- Difusor (exercício 30) ---------------------------------------------------------------------
+// ---- Difusor ---------------------------------------------------------------------
 
 export const diffusionStepsMs = [20, 40, 80, 160];
 
@@ -205,7 +207,7 @@ export class DiffuserFdn {
   }
 }
 
-// ---- Pitch shifter e shimmer (exercício 31) -----------------------------------------------------
+// ---- Pitch shifter e shimmer -----------------------------------------------------
 
 export const crossfadeGain = (p: number): number => Math.sin(Math.PI * p) ** 2;
 

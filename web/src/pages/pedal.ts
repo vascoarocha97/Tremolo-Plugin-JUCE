@@ -1,6 +1,9 @@
+// ⚠ SPOILER: este ficheiro implementa em TypeScript a matemática de um ou mais exercícios C++.
+//   Ler o código antes de fazeres o exercício equivale a ver a solução; usa a página no browser.
 import type { PageDef } from "./types";
 import { Plot, audioFrequencyTicks, cssColor, formatHz } from "../lib/plot";
 import { LoopPlayer } from "../lib/audio";
+import { onDispose } from "../lib/lifecycle";
 import { callout, controls, el, legend, p, panel, playButton, readout, slider, sources, toggle } from "../lib/ui";
 import { magnitudeSpectrumDb, oversampled, onePole } from "../lib/dsp";
 import { DiffuserFdn } from "../lib/reverb";
@@ -20,7 +23,7 @@ interface PedalSettings {
   oversampling: boolean;
 }
 
-/** Glitch como no exercício 39, ligado entre `from` e `to` (amostras), com pré-rolo e crossfades. */
+/** Glitch, ligado entre `from` e `to` (amostras), com pré-rolo e crossfades. */
 function glitch(x: Float32Array, from: number, to: number, sliceLength: number, fade: number): Float32Array {
   const out = x.slice();
   if (from - sliceLength - fade < 0) return out;
@@ -117,6 +120,7 @@ export const pedalPage: PageDef = {
     });
 
     let timer = 0;
+    onDispose(() => window.clearTimeout(timer));
     const analyse = () => {
       window.clearTimeout(timer);
       timer = window.setTimeout(() => {

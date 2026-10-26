@@ -52,7 +52,7 @@ Doze parâmetros, com exatamente estes IDs (versão 1), tipos, gamas e valores p
    dados inválidos não podem crashar.
 3. **Latência**: com tudo desligado (fuzz off, crush off, glitch off, reverb_mix 0, saída 0 dB), um
    impulso sai na posição `getLatencySamples()` (±1 amostra) com amplitude > 0.7. A latência **não
-   muda** quando o fuzz liga — o caminho do sinal tem a mesma latência com e sem fuzz.
+   muda** quando o fuzz liga — com o fuzz ligado (drive 0 dB), um impulso pequeno sai na mesma posição.
 4. **Fuzz**: num seno de 220 Hz (amplitude 0.5, drive 30 dB, tom no máximo) o 3.º harmónico fica acima de
    −30 dBc; com o fuzz desligado, abaixo de −60 dBc. Num seno de 5 kHz com drive 30 dB, o alias do 7.º
    harmónico (a 13 kHz) fica abaixo de −40 dBc → precisas de **oversampling** (exercício 26).
@@ -65,6 +65,8 @@ Doze parâmetros, com exatamente estes IDs (versão 1), tipos, gamas e valores p
    (diferença < 10⁻⁵), sem saltos na transição.
 9. **Robustez** (mini-pluginval): estéreo aceite, 5.1 recusado; a 44.1 e 96 kHz, com blocos de 1 a 2×
    o tamanho prometido e automação aleatória: sem alocações no `processBlock`, sem NaN/inf, pico < 8.
+   Como no exercício 35, processa aos pedaços quando um bloco excede o prometido (o `juce::dsp::Oversampling`
+   só aceita até ao tamanho do `initProcessing`).
 10. **Editor**: `hasEditor()`, e o editor abre (> 100×100 px) e fecha. Com reverb, `getTailLengthSeconds() > 0`.
 
 ### Sugestões de desenho (não são testadas)
@@ -78,6 +80,10 @@ Doze parâmetros, com exatamente estes IDs (versão 1), tipos, gamas e valores p
 - **Glitch** antes da reverb: a cauda da reverb disfarça as junções. A reverb usa o difusor + FDN do
   exercício 30 (alocar as linhas no `prepare`).
 - **Ordem dos `SmoothedValue`**: o do drive corre à taxa do oversampling.
+- **Curvas duras** (hard clip, a assimétrica do exercício 23) geram mais harmónicos altos: com 4× o
+  alias a 13 kHz fica perto do limite do teste; usa 8× ou uma curva mais suave (tanh).
+- **Ligar/desligar secções** (fuzz, crush) sem crossfade dá um clique; um crossfade curto, como no
+  glitch, resolve.
 - Um **editor** com uma secção por efeito; `GroupComponent` ou simplesmente desenhar caixas no `paint`.
 
 ### Experimentar
@@ -98,8 +104,9 @@ omissão (para evitar realimentação microfone → colunas). Em *Options → Au
 - **Filtros IIR no oversampling**: fase não linear — o impulso "espalha-se" e o teste da latência falha.
 - **`std::vector::resize` / `new` no `processBlock`** (o teste de alocações apanha).
 - **Bypass sem atrasar o seco**: salto no tempo e um clique.
-- **Glitch e blocos maiores do que o prometido**: o histórico tem de ter folga (ou processa aos pedaços,
-  como no exercício 35).
+- **Blocos maiores do que o prometido**: o oversampling e o histórico do glitch têm tamanho fixo —
+  processa aos pedaços, como no exercício 35.
+- **Religar o glitch durante o fade-out** (exercício 39): a rampa tem de voltar a subir.
 
 ## Para saber mais
 

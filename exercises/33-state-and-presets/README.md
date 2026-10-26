@@ -60,7 +60,9 @@ Em `Processor.cpp`: **TODO(1)** `EchoState::save`, **TODO(2)** `EchoState::load`
 
 ## Armadilhas comuns
 
-- **Ler `apvts.state` diretamente** em vez de `copyState()`: não é thread-safe (o áudio pode estar a mexer).
+- **Ler `apvts.state` diretamente** em vez de `copyState()`: os valores dos parâmetros só passam para a
+  `ValueTree` num `Timer` (pode estar desatualizada), e o host pode pedir o estado fora da message thread.
+  O `copyState()` faz o *flush* dos valores e copia com o lock interno do APVTS.
 - **Confiar nos bytes**: um `setStateInformation` com lixo não pode crashar nem deixar o plugin num estado meio carregado.
 - **Esquecer os parâmetros em falta** num estado antigo (ver acima).
 - **`setValue` em vez de `setValueNotifyingHost`**: o host e a GUI não ficam a saber.

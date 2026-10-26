@@ -1,5 +1,7 @@
 #include <learn_testing/LearnTesting.h>
 
+#include <cmath>
+
 #include "Processor.h"
 
 #include <numbers>
@@ -62,7 +64,10 @@ TEST_CASE ("NaiveSawOscillator: rampa de -1 a +1", "[03]")
     REQUIRE_THAT (buffer.getSample (0, 1), WithinAbs (-1.0 + 2.0 / 48.0, 1.0e-5));
     REQUIRE_THAT (buffer.getSample (0, 24), WithinAbs (0.0, 1.0e-5));
     REQUIRE_THAT (buffer.getSample (0, 47), WithinAbs (1.0 - 2.0 / 48.0, 1.0e-5));
-    REQUIRE_THAT (buffer.getSample (0, 48), WithinAbs (-1.0, 1.0e-5)); // recomeça
+    // Na amostra 48 a fase volta a 0: conforme o arredondamento, pode dar ≈ −1 ou ≈ +1 (é a
+    // descontinuidade). A seguinte já é inequívoca: recomeçou.
+    REQUIRE_THAT (std::abs (buffer.getSample (0, 48)), WithinAbs (1.0, 1.0e-4));
+    REQUIRE_THAT (buffer.getSample (0, 49), WithinAbs (-1.0 + 2.0 / 48.0, 1.0e-4));
     REQUIRE_THAT (mean (buffer, 0), WithinAbs (-1.0 / 48.0, 1.0e-4));
 }
 

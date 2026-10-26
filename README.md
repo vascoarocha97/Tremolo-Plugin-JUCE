@@ -25,7 +25,7 @@ Catch2 v3.16.1 para os testes. Tudo o resto em `PLAN.md` e `DECISIONS.md`.
 | **Git for Windows** | qualquer recente | https://git-scm.com/download/win |
 | **CMake** | ≥ 3.25 | Já vem com o Visual Studio (3.31). Se instalares à parte (https://cmake.org/download), também serve (testado com 4.4). |
 | **VS Code** | recente | Extensões: **CMake Tools** (`ms-vscode.cmake-tools`) e **C/C++** (`ms-vscode.cpptools`). O repositório recomenda-as automaticamente. |
-| **Node.js LTS** | ≥ 20 (testado com 24) | Só para a web app. https://nodejs.org |
+| **Node.js LTS** | 20.19+ ou 22.12+ (exigência do Vite 8; testado com 24) | Só para a web app. https://nodejs.org |
 
 Não precisas de abrir o "Developer PowerShell": o comando `learn` encontra o Visual Studio com o
 `vswhere` e ativa o ambiente do compilador sozinho.
@@ -83,14 +83,18 @@ no Windows a política de execução por omissão bloqueia scripts `.ps1`.
 - **36–38 (performance)** compilam em **Release** (o `./learn` trata disso): medir velocidade em Debug
   não diz nada. Os testes de velocidade só contam em Release.
 - **35 e 40 (plugins)**: `./learn run` compila um **VST3** e um Standalone (o do JUCE, sem fonte de teste:
-  usa a entrada da placa, que vem silenciada — *Options → Audio/MIDI Settings*). O `.vst3` fica em
+  usa a entrada da placa, que vem silenciada — *Options → Audio/MIDI Settings*). **Atenção ao volume:**
+  aqui não há o limitador de proteção do standalone partilhado; um feedback ou fuzz mal feito pode
+  sair muito alto. Começa com o volume baixo e de preferência sem auscultadores. O `.vst3` fica em
   `build\exercises\NN-...\exNN_plugin_artefacts\Debug\VST3\`; para um DAW o encontrar, copia-o para
   `%LOCALAPPDATA%\Programs\Common\VST3`.
 - **40 (o pedal)** não tem TODOs: o README é uma especificação e os testes verificam-na "de fora".
   Qualquer `.h`/`.cpp` que criares na pasta entra no build.
 - Alguns exercícios usam o **teu** código de um exercício anterior (ex.: o tremolo do 19 usa o LFO do
   18). Se o anterior não estiver feito, os testes do seguinte também falham — o README de cada um diz
-  de quais depende.
+  de quais depende. Como esses exercícios são ligados no mesmo executável, funções auxiliares tuas
+  com o mesmo nome em dois exercícios colidem (erro LNK2005): põe-nas num `namespace { }` anónimo
+  dentro do `.cpp`.
 
 ## 5. Abrir no VS Code
 
@@ -136,6 +140,9 @@ Para comparar a tua solução com a de referência de um exercício (só depois 
 git diff main solutions -- exercises/03-nyquist-aliasing
 ```
 
+O branch `solutions` existe neste repositório local (não foi feito `push`). Num clone feito a partir
+de um remoto que o tenha, usa `origin/solutions` no lugar de `solutions`.
+
 ## 8. Documentos do projeto
 
 | Ficheiro | Conteúdo |
@@ -151,7 +158,9 @@ git diff main solutions -- exercises/03-nyquist-aliasing
 
 As pastas `complete/` e `todo/` são o projeto do curso oficial do JUCE (tremolo), que já estava neste
 repositório. Não fazem parte desta plataforma, não são compiladas pelo `CMakeLists.txt` da raiz e
-não foram alteradas. O README original está em `TREMOLO_COURSE_README.md`.
+não foram alteradas por ela (a alteração em *stage* em `complete/CMakeLists.txt` é tua e ficou como
+estava). O README original está em `TREMOLO_COURSE_README.md`. O workflow de CI em `.github/` também
+é desse curso (compila `complete/`) e não testa esta plataforma.
 
 ## 10. Licenças
 

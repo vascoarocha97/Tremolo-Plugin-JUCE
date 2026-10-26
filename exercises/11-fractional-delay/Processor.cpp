@@ -6,7 +6,7 @@
 void FractionalDelayLine::prepare (int maximumDelayInSamples)
 {
     maximumDelay = juce::jmax (0, maximumDelayInSamples);
-    // +2: a amostra atual, as N anteriores, e mais uma para interpolar no atraso máximo
+    // +2: a amostra atual, as N anteriores, e uma de folga
     buffer.assign (static_cast<size_t> (maximumDelay + 2), 0.0f);
     writeIndex = 0;
 }

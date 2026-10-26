@@ -1,3 +1,5 @@
+// ⚠ SPOILER: este ficheiro implementa em TypeScript a matemática de um ou mais exercícios C++.
+//   Ler o código antes de fazeres o exercício equivale a ver a solução; usa a página no browser.
 import type { PageDef } from "./types";
 import { Plot, cssColor, audioFrequencyTicks, formatHz } from "../lib/plot";
 import { LoopPlayer } from "../lib/audio";
@@ -7,7 +9,7 @@ import { renderSource, sourceSelect, type SourceKind } from "../lib/sources";
 
 const fs = 48000;
 
-/** Bitcrusher do exercício 24: sample & hold com acumulador de fase + quantização. */
+/** Bitcrusher: sample & hold com acumulador de fase + quantização. */
 function crush(input: Float32Array, bits: number, factor: number): Float32Array {
   const out = new Float32Array(input.length);
   let phase = 1;

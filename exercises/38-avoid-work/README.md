@@ -12,8 +12,9 @@
 
 ### 1. Coeficientes só quando mudam
 
-Um biquad precisa de `tan`, divisões... para calcular coeficientes (exercício 15). O host (e o
-wrapper) chamam `setCutoff` em **todos** os blocos, quase sempre com o mesmo valor. Guarda o valor e
+Um biquad precisa de `tan`, divisões... para calcular coeficientes (exercício 15). O
+`processBlock` do plugin lê os parâmetros e chama `setCutoff` em **todos** os blocos (na thread de
+áudio), quase sempre com o mesmo valor. Guarda o valor e
 marca "precisa de recalcular" só quando muda; recalcula no início do próximo `process`. Vários setters
 entre dois blocos → um só recálculo.
 
@@ -57,7 +58,9 @@ denormais no `process`, **TODO(3)** `canSkip`.
 ## Armadilhas comuns
 
 - **Saltar quando a entrada é silêncio mas o estado não é zero**: corta a cauda do filtro.
-- **Recalcular no setter** (que pode ser chamado de outra thread) em vez de no `process`.
+- **Chamar os setters de outra thread** (ex.: a GUI): `cutoff` e o "precisa de recalcular" são
+  variáveis simples, só seguras na thread de áudio. A GUI fala com o áudio através dos parâmetros
+  (módulo 8).
 - **Ligar FTZ/DAZ "para sempre"** (sem RAII) na thread do host: afeta o código dos outros.
 
 ## Como verificar

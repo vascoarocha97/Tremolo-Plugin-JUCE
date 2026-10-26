@@ -49,7 +49,11 @@ function Fail ([string] $text)
 
 function Import-VsEnvironment
 {
-    if ((Get-Command cl.exe -ErrorAction SilentlyContinue) -and (Get-Command ninja.exe -ErrorAction SilentlyContinue))
+    # Já num ambiente do Visual Studio x64 (ex.: "x64 Native Tools"): reaproveita. Um "Developer
+    # PowerShell" por omissão é x86 — nesse caso ativamos o x64 por cima, para não misturar arquiteturas
+    # na mesma pasta build/.
+    if ((Get-Command cl.exe -ErrorAction SilentlyContinue) -and (Get-Command ninja.exe -ErrorAction SilentlyContinue) `
+        -and ($env:VSCMD_ARG_TGT_ARCH -eq "x64"))
     {
         return
     }
@@ -94,7 +98,9 @@ function Import-VsEnvironment
 
 function Invoke-Configure ([switch] $Force)
 {
-    if ((Test-Path (Join-Path $BuildDir "CMakeCache.txt")) -and -not $Force)
+    # Uma configuração interrompida (rede, SDK em falta) deixa a cache sem build.ninja: nesse caso
+    # configura outra vez.
+    if ((Test-Path (Join-Path $BuildDir "CMakeCache.txt")) -and (Test-Path (Join-Path $BuildDir "build.ninja")) -and -not $Force)
     {
         return
     }
@@ -331,18 +337,20 @@ function Get-TestExecutable ($exercise, [string] $config)
 }
 
 # Corre o executável Catch2 com dois reporters: JUnit (para nós) e consola (para ti / para o /tutor).
-function Invoke-Tests ($exercise, [string] $config)
+function Invoke-Tests ($exercise, [string] $config, [string] $filter = "", [string] $suffix = "")
 {
     $exe = Get-TestExecutable $exercise $config
-    $junit = Join-Path $LogDir ("ex" + $exercise.id + "-junit.xml")
-    $consoleLog = Join-Path $LogDir ("ex" + $exercise.id + "-tests.txt")
+    $junitName = "ex$($exercise.id)$suffix-junit.xml"
+    $consoleName = "ex$($exercise.id)$suffix-tests.txt"
+    $junit = Join-Path $LogDir $junitName
+    $consoleLog = Join-Path $LogDir $consoleName
     Remove-Item $junit, $consoleLog -ErrorAction SilentlyContinue
 
     $info = New-Object System.Diagnostics.ProcessStartInfo
     $info.FileName = $exe
     $info.WorkingDirectory = $LogDir
     # Caminhos relativos: evita problemas com o espaço em "Learn JUCE"
-    $info.Arguments = "--order decl --reporter junit::out=ex$($exercise.id)-junit.xml --reporter console::out=ex$($exercise.id)-tests.txt::colour-mode=none"
+    $info.Arguments = "$filter --order decl --reporter junit::out=$junitName --reporter console::out=$($consoleName)::colour-mode=none"
     $info.UseShellExecute = $false
     $info.CreateNoWindow = $true
     $info.RedirectStandardOutput = $true
@@ -374,8 +382,8 @@ function Invoke-Tests ($exercise, [string] $config)
     {
         foreach ($case in $xml.SelectNodes("//testcase"))
         {
-            # Catch2 junta as secções ao nome com '/'; agrupamos pelo TEST_CASE
-            $name = ($case.GetAttribute("name") -split '/')[0]
+            # Os testes não usam SECTIONs: o nome do <testcase> é o nome do TEST_CASE (que pode ter '/').
+            $name = $case.GetAttribute("name")
 
             if (-not $cases.Contains($name))
             {
@@ -441,6 +449,20 @@ function Invoke-Check ($exercise, [switch] $Detailed, [switch] $Quiet)
     }
 
     $result = Invoke-Tests $exercise $config
+
+    if ($config -eq "Release" -and -not $result.timedOut -and (Invoke-Build @("ex$($exercise.id)_tests") "Debug"))
+    {
+        $debugResult = Invoke-Tests $exercise "Debug" '"*aloca*"' "-debug"
+
+        foreach ($debugCase in $debugResult.cases | Where-Object { $_.failed })
+        {
+            foreach ($case in $result.cases | Where-Object { $_.name -eq $debugCase.name })
+            {
+                $case.failed = $true
+                $case.messages.Insert(0, "(em Debug, onde o detetor também vê malloc/realloc)`n" + ($debugCase.messages -join "`n"))
+            }
+        }
+    }
 
     if ($result.timedOut)
     {

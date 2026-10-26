@@ -45,8 +45,12 @@ atualiza os coeficientes de todos os canais sem tocar no allocator. O último te
 
 ### Ordem no `prepare`
 
-O `IIR::Filter::prepare` usa a **ordem** dos coeficientes para reservar o estado. Por isso os
-coeficientes calculam-se **antes** de `chain.prepare (spec)`.
+O `IIR::Filter` reserva o estado de acordo com a **ordem** dos coeficientes que tem quando é
+preparado. Neste exercício a ordem nunca muda (é sempre um biquad: o `ProcessorDuplicator` já começa
+com coeficientes de 2.ª ordem), por isso a ordem das chamadas não causa erros aqui. Mesmo assim é boa
+prática calcular os coeficientes **antes** de `chain.prepare (spec)`: se a ordem mudasse depois
+(p. ex. de 1.ª para 2.ª ordem), o `IIR::Filter` detetava-o no `process` e chamava `reset()`, que
+**aloca** o novo estado na thread de áudio.
 
 ### O valor inicial do `juce::dsp::Gain`
 
@@ -63,7 +67,8 @@ Os setters (que só guardam valores e marcam a atualização) já estão feitos.
 
 - **`makeHighPass` (Ptr) em vez de `ArrayCoefficients`** no `process`: funciona e passa nos testes
   de som — mas não no de alocações.
-- **`chain.prepare` antes de haver coeficientes**.
+- **Mudar a ordem do filtro depois do `prepare`** (ex.: trocar um passa-alto de 1.ª ordem por um de
+  2.ª): o estado é realocado na thread de áudio.
 - **Gain a 0** (ver acima).
 - **Passa-alto e passa-baixo trocados**: o "corte de graves" é um passa-**alto**.
 

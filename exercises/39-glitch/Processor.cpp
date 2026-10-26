@@ -64,7 +64,9 @@ void Glitch::process (const juce::dsp::ProcessContextReplacing<float>& context) 
     // TODO(3): transições sem clique (ver README):
     //   - ao ligar (active && ! repeating): captura a fatia, repeating = true, e prepara loopGain
     //     para uma rampa de 0 até 1 com a duração fadeMs (reset + setCurrentAndTargetValue + setTargetValue);
-    //   - ao desligar (! active, ainda repeating, a rampa ainda a subir ou em 1): rampa até 0.
+    //   - ao desligar (! active, ainda repeating, a rampa ainda a subir ou em 1): rampa até 0;
+    //   - ao religar DURANTE a rampa de descida (active, repeating, alvo em 0): rampa de volta até 1
+    //     (senão o efeito fica "ligado" mas mudo).
     //   (No fim do process, quando a rampa de descida acaba, repeating passa a false — já feito.)
 
     for (int n = 0; n < numSamples; ++n)

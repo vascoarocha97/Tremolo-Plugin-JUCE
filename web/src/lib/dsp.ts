@@ -1,4 +1,7 @@
-// Pequena biblioteca de DSP em TypeScript, com os mesmos algoritmos dos exercícios C++.
+// ⚠ SPOILER: este ficheiro implementa, em TypeScript, a mesma matemática que os exercícios C++ pedem
+//   (é o que alimenta as visualizações e o som das páginas). Ler este código antes de fazeres o
+//   exercício correspondente é equivalente a ver a solução. Usa as páginas no browser, não o código.
+// Pequena biblioteca de DSP em TypeScript para as páginas da web app.
 // Serve as visualizações e o áudio das páginas (não é otimizada, é legível).
 
 export const TWO_PI = 2 * Math.PI;
@@ -26,7 +29,7 @@ export function sine(frequency: number, sampleRate: number, length: number, ampl
   return out;
 }
 
-/** Dente de serra ingénuo (exercício 03): rampa de -1 a 1 sem limitar a banda. */
+/** Dente de serra ingénuo: rampa de -1 a 1 sem limitar a banda. */
 export function naiveSaw(frequency: number, sampleRate: number, length: number, amplitude = 1): Float32Array {
   const out = new Float32Array(length);
   let phase = 0;
@@ -59,19 +62,19 @@ export function noise(length: number, amplitude = 1, seed = 1): Float32Array {
   return out;
 }
 
-/** Frequência ouvida depois de amostrar (exercício 03). */
+/** Frequência ouvida depois de amostrar. */
 export function aliasedFrequency(frequency: number, sampleRate: number): number {
   const folded = Math.abs(frequency) % sampleRate;
   return folded > sampleRate / 2 ? sampleRate - folded : folded;
 }
 
-/** Quantização mid-tread para N bits (exercício 04). */
+/** Quantização mid-tread para N bits. */
 export function quantise(x: number, bits: number): number {
   const step = 1 / Math.pow(2, bits - 1);
   return clamp(Math.round(x / step) * step, -1, 1 - step);
 }
 
-/** Aplica um ganho com rampa linear de rampSamples amostras a partir de cada mudança (exercício 08). */
+/** Aplica um ganho com rampa linear de rampSamples amostras a partir de cada mudança. */
 export function rampedGain(targets: Float32Array, rampSamples: number): Float32Array {
   const out = new Float32Array(targets.length);
   let current = targets[0] ?? 0;
@@ -252,7 +255,7 @@ export interface Biquad {
 
 export type BiquadType = "lowPass" | "highPass" | "bandPass" | "notch" | "peaking" | "lowShelf" | "highShelf";
 
-/** Coeficientes do Audio EQ Cookbook (RBJ), normalizados por a0 — como no exercício 15. */
+/** Coeficientes do Audio EQ Cookbook (RBJ), normalizados por a0. */
 export function rbj(type: BiquadType, sampleRate: number, f0: number, q: number, gainDb = 0): Biquad {
   const w0 = (TWO_PI * f0) / sampleRate;
   const c = Math.cos(w0);
@@ -304,7 +307,7 @@ export function processBiquad(input: Float32Array, c: Biquad): Float32Array {
   return out;
 }
 
-/** Filtro de um polo (exercício 14). */
+/** Filtro de um polo. */
 export function onePole(input: Float32Array, cutoff: number, sampleRate: number, highPass = false): Float32Array {
   const a = 1 - Math.exp((-TWO_PI * cutoff) / sampleRate);
   const out = new Float32Array(input.length);
@@ -318,7 +321,7 @@ export function onePole(input: Float32Array, cutoff: number, sampleRate: number,
 
 export type SvfMode = "lowPass" | "bandPass" | "highPass";
 
-/** SVF TPT (exercício 16) com o corte modulado por amostra: cutoffAt(n) devolve o corte da amostra n. */
+/** SVF TPT com o corte modulado por amostra: cutoffAt(n) devolve o corte da amostra n. */
 export function processSvf(input: Float32Array, sampleRate: number, q: number, mode: SvfMode, cutoffAt: (n: number) => number): Float32Array {
   const out = new Float32Array(input.length);
   const R2 = 1 / Math.max(0.1, q);
@@ -341,7 +344,7 @@ export function processSvf(input: Float32Array, sampleRate: number, q: number, m
 
 export type LfoShape = "sine" | "triangle" | "saw" | "square";
 
-/** As formas do LFO do exercício 18 (fase em ciclos). */
+/** As formas do LFO (fase em ciclos). */
 export function lfoValue(shape: LfoShape, phase: number): number {
   const p = phase - Math.floor(phase);
   switch (shape) {
@@ -352,7 +355,7 @@ export function lfoValue(shape: LfoShape, phase: number): number {
   }
 }
 
-/** Delay modulado com feedback e interpolação linear, um canal (chorus/flanger, exercícios 20–21).
+/** Delay modulado com feedback e interpolação linear, um canal (chorus/flanger).
     delayAt(n) devolve o atraso em amostras (>= 1). Processa o loop duas vezes para não haver corte
     na repetição. */
 export function modulatedDelay(input: Float32Array, delayAt: (n: number) => number, feedback: number, mix: number, maxDelay: number): Float32Array {
@@ -381,7 +384,7 @@ export function modulatedDelay(input: Float32Array, delayAt: (n: number) => numb
 
 export type ShaperKind = "hardClip" | "softClip" | "tanh" | "asymmetric";
 
-/** As curvas do exercício 22. */
+/** Curvas de saturação. */
 export function shape(kind: ShaperKind, x: number): number {
   switch (kind) {
     case "hardClip": return clamp(x, -1, 1);

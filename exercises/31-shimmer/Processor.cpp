@@ -73,7 +73,7 @@ void ShimmerReverb::prepare (const juce::dsp::ProcessSpec& spec)
     fdn.prepare (spec.sampleRate);
     shifter.prepare (spec.sampleRate);
 
-    // passa-baixo de um polo a ~6 kHz no ciclo (exercício 12): cada oitava acima perde mais,
+    // passa-baixo de um polo a ~6 kHz no ciclo (exercício 14): cada oitava acima perde mais,
     // por isso a subida acaba por se apagar em vez de ir até Nyquist.
     lowpassCoeff = std::exp (-juce::MathConstants<float>::twoPi * 6000.0f / static_cast<float> (spec.sampleRate));
     reset();

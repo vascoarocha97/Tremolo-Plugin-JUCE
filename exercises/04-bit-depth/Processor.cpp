@@ -29,7 +29,8 @@ void BitDepthReducer::processBlock (juce::AudioBuffer<float>& buffer)
     // TODO(3): quantiza todas as amostras de todos os canais para `bits` bits.
     //
     // TODO(4): se ditherEnabled, ANTES de quantizar soma a cada amostra ruído TPDF com amplitude
-    //          de ±1 LSB. Ruído TPDF = diferença (ou soma) de dois números aleatórios uniformes
-    //          independentes; random.nextFloat() devolve um uniforme em [0, 1).
+    //          de ±1 LSB. Ruído TPDF = DIFERENÇA de dois números aleatórios uniformes independentes
+    //          (random.nextFloat() devolve um uniforme em [0, 1): a soma de dois teria média 1,
+    //          e um dither com média ≠ 0 acrescenta um desvio DC).
     juce::ignoreUnused (buffer);
 }

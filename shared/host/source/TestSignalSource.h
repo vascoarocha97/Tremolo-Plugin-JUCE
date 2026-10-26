@@ -62,6 +62,7 @@ private:
     juce::SmoothedValue<float> smoothedLevel;
 
     double sampleRate = 44100.0;
+    std::atomic<double> preparedSampleRate { 44100.0 }; // cópia para a message thread (ficheiros)
     double phase = 0.0;
     double sweepTime = 0.0;
     int clickCounter = 0;

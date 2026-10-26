@@ -28,16 +28,18 @@ estiver dentro do círculo unitário (0 < a < 2, aqui 0 < a ≤ 1), o filtro é 
 ### Do corte ao coeficiente
 
 O análogo analógico é um circuito RC, cuja resposta a um degrau é `1 − e^(−t/τ)` com `τ = RC =
-1/(2π·fc)`. Se quisermos que o filtro digital tenha **exatamente** essa resposta ao degrau
-amostrada, o fator por amostra tem de ser `e^(−T/τ)` com `T = 1/fs`:
+1/(2π·fc)`. Se quisermos que o filtro digital tenha essa resposta ao degrau amostrada, o fator por
+amostra tem de ser `e^(−T/τ)` com `T = 1/fs`:
 
 ```
 a = 1 − e^(−2π·fc/fs)
 ```
 
 Para fc muito abaixo de fs, `a ≈ 2π·fc/fs` (o primeiro termo de Taylor), e é essa a aproximação que
-aparece em muitos códigos — funciona mal perto de Nyquist. Este mapeamento chama-se *impulse
-invariant*. Repara que o −3 dB não fica exatamente em fc (fica perto, para fc ≪ fs); se precisares
+aparece em muitos códigos — funciona mal perto de Nyquist. Este mapeamento põe o polo digital em
+`z = e^(−T/τ)` (o polo analógico "casado", *matched-z*) e normaliza o ganho DC para 1. Um detalhe:
+com `y[n] = a·x[n] + (1 − a)·y[n−1]`, a amostra `n` já leva `n + 1` passos, por isso `y[n]` é a curva
+RC no instante `(n + 1)·T` — a mesma curva, adiantada uma amostra. Repara que o −3 dB não fica exatamente em fc (fica perto, para fc ≪ fs); se precisares
 de um corte exato, a alternativa é o *bilinear transform* com pré-distorção (o
 `juce::dsp::IIR::Coefficients::makeFirstOrderLowPass` e o `juce::dsp::FirstOrderTPTFilter` fazem isso).
 

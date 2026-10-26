@@ -47,8 +47,9 @@ distorção, e um sinal com menos de meio LSB **desaparece** (vira silêncio). O
 sinal abaixo de meio LSB desaparece" mostra-o.
 
 **Dither** é somar um pouco de ruído **antes** de quantizar. Com ruído **TPDF** (distribuição
-triangular, ±1 LSB, que se obtém somando ou subtraindo dois números aleatórios uniformes
-independentes), a média e a potência do erro deixam de depender do sinal (Lipshitz, Wannamaker &
+triangular, ±1 LSB, que se obtém pela diferença de dois números aleatórios uniformes
+independentes — ou pela soma de dois uniformes **centrados em zero**; somar dois `nextFloat()`, que
+estão em [0, 1), dava ruído com média diferente de zero), a média e a potência do erro deixam de depender do sinal (Lipshitz, Wannamaker &
 Vanderkooy, 1992). O resultado: em vez de distorção tens um ruído de fundo constante e o sinal
 fraco **continua lá, enterrado no ruído** (o teste mede a amplitude do seno à saída).
 

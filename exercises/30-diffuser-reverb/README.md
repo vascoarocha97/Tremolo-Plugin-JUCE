@@ -30,7 +30,8 @@ Com N = 8 canais, cada passo faz três coisas:
 2. **Polaridades**: sem isto, a mesma combinação de sinais repetia-se em todos os passos.
 3. **Hadamard**: cada um desses 8 ecos é espalhado pelos 8 canais.
 
-Resultado: **8× mais ecos** por passo. Com 4 passos, 8⁴ = 4096 caminhos diferentes por canal.
+Resultado: **8× mais ecos** por passo. Um impulso que entra nos 8 canais sai de 4 passos com até
+8⁴ = 4096 caminhos por canal (se entrar num só canal, o 1.º passo só o espalha: 8³ = 512).
 
 Todas as três operações preservam a energia (um atraso não muda energia; inverter o sinal também não; a
 Hadamard normalizada é ortogonal), por isso o difusor é um "allpass multicanal": não colore o som,

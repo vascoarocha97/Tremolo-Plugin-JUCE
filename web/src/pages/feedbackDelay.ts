@@ -1,3 +1,5 @@
+// ⚠ SPOILER: este ficheiro implementa em TypeScript a matemática de um ou mais exercícios C++.
+//   Ler o código antes de fazeres o exercício equivale a ver a solução; usa a página no browser.
 import type { PageDef } from "./types";
 import { Plot, cssColor } from "../lib/plot";
 import { LoopPlayer } from "../lib/audio";
@@ -6,7 +8,7 @@ import { TWO_PI, demoLoop, gainToDb } from "../lib/dsp";
 
 type Mode = "echo" | "pingpong";
 
-/** Eco com feedback (exercício 12) ou ping-pong (exercício 13), aplicado a um loop.
+/** Eco com feedback ou ping-pong, aplicado a um loop.
     Processa o loop duas vezes e devolve a segunda passagem: assim a cauda dos ecos continua no
     início do loop e a repetição não tem cortes. */
 function processLoop(input: Float32Array[], rate: number, delayMs: number, feedback: number, mix: number, mode: Mode): Float32Array[] {

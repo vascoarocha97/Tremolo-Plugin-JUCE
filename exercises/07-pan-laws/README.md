@@ -28,8 +28,9 @@ percebido mantém-se constante ao mover o pan — mas somado a mono o centro fic
 ### Compromisso (−4.5 dB no centro)
 
 Entre as duas: os ganhos de potência constante elevados a 1.5 (0.707^1.5 = 0.595 → −4.5 dB). É a
-forma usada pelo `juce::dsp::PannerRule::sin4p5dB`. Há outras definições de −4.5 dB (por exemplo, a
-média geométrica entre linear e potência constante) — diferem nas posições intermédias, não no centro.
+forma usada pelo `juce::dsp::PannerRule::sin4p5dB`, e é a que este exercício segue. Há outras
+definições de −4.5 dB — a página da CMU citada abaixo, por exemplo, usa a média geométrica entre a
+lei linear e a de potência constante. Diferem nas posições intermédias, não no centro.
 Não há uma lei "certa": DAWs e consolas diferentes usam leis diferentes.
 
 ### O `juce::dsp::Panner` normaliza o centro
@@ -63,6 +64,7 @@ Em `Processor.cpp`: TODO(1)–(3) as três leis em `Pan::computeGains`, TODO(4) 
 ## Para saber mais
 
 - Carnegie Mellon University, *Introduction to Computer Music*, ["Loudness Concepts & Panning Laws"](https://www.cs.cmu.edu/~music/icm-online/readings/panlaws/) —
-  as três leis, porquê o "buraco no meio" e quando usar cada uma.
+  as três leis, porquê o "buraco no meio" e quando usar cada uma (atenção: define o −4.5 dB de outra
+  forma — ver acima).
 - [juce::dsp::Panner — documentação](https://docs.juce.com/master/classjuce_1_1dsp_1_1Panner.html) — as regras disponíveis no JUCE
   (a normalização do centro só se vê no código-fonte, `modules/juce_dsp/processors/juce_Panner.cpp`).

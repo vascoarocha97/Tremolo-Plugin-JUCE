@@ -67,7 +67,7 @@ Os combs e allpasses são os **teus** (do exercício 27): se o 27 não passar, e
 
 ## Armadilhas comuns
 
-- **Mesmo g para todos os combs**: os combs curtos decaem mais devagar do que os compridos, o RT60
+- **Mesmo g para todos os combs**: com o mesmo g, os combs curtos dão mais voltas por segundo e decaem mais depressa do que os compridos, o RT60
   deixa de bater certo.
 - **Somar os allpasses em paralelo**: devem estar em série — cada um recebe a saída do anterior.
 - **Esquecer o ganho de entrada** (1/8): 8 combs somados ficam ~18 dB acima do sinal.

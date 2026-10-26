@@ -43,8 +43,8 @@ leitura B: fase p + ½ (mod 1)  ganho sin²(π (p + ½))
 ```
 
 Não é um pitch shifter de alta qualidade (há modulação de amplitude e "fantasmas" à frequência da janela —
-técnicas melhores: PSOLA, phase vocoder; ver a apresentação da Signalsmith), mas é barato, não tem
-latência significativa, e **dentro de uma reverb** os artefactos perdem-se na cauda.
+técnicas melhores: PSOLA, phase vocoder; ver a apresentação da Signalsmith), mas é barato e, **dentro de uma reverb**, tanto os artefactos como a latência (em média meia
+janela, ~25 ms) perdem-se na cauda.
 
 ### O ciclo do shimmer
 

@@ -21,7 +21,12 @@ Argumentos: exercício = `$0`, nível pedido = `$1` (vazio = nível 1).
 2. **Lê o contexto do exercício:**
    - `exercises/<folder>/README.md` (a lição: objetivos, armadilhas, fontes);
    - `exercises/<folder>/Processor.h` e `Processor.cpp` (**o código do aluno**);
-   - `exercises/<folder>/tests/*.cpp` (o que é verificado e com que tolerâncias).
+   - `exercises/<folder>/tests/*.cpp` (o que é verificado e com que tolerâncias);
+   - `exercises/<folder>/CMakeLists.txt`: se tiver `DEPENDS NN`, este exercício usa o código do aluno
+     do exercício NN. Vê o estado desse exercício em `progress.json`; se não estiver feito, a causa
+     da falha pode estar lá — diz isso e sugere `/tutor NN`.
+   - No exercício 40 o aluno pode ter criado outros `.h`/`.cpp` na pasta: lê-os também.
+   - **Não** leias o código da web app (`web/src/lib`, `web/src/pages`): é spoiler (ver `CLAUDE.md`).
 
 3. **Obtém o resultado dos testes.** Corre `./learn check <NN>` (pede autorização se for preciso). Se
    não puderes correr, lê `build/learn-logs/ex<NN>-tests.txt` e `build/learn-logs/build-ex<NN>_tests.log`
@@ -68,9 +73,11 @@ _Próxima pista: `/tutor NN <N+1>` · Ver a teoria: http://localhost:5173/#/<pá
 
 ## Proibido (a não ser que o aluno escreva "mostra a solução")
 
-- Editar os ficheiros do exercício ou escrever o código que resolve um TODO.
-- Ler o branch `solutions`.
+- Editar os ficheiros do exercício (qualquer ficheiro do aluno na pasta) ou escrever o código que
+  resolve um TODO.
+- Ler o branch `solutions` ou o código da web app (`web/src/lib`, `web/src/pages`).
 - Dar pseudo-código antes do nível 3 ou pseudo-código que resolva o exercício inteiro.
 
-Se o aluno escrever "mostra a solução": confirma o exercício, mostra a solução com explicação linha a
-linha, e sugere que a escreva ele próprio de memória depois (sem copiar) para fixar.
+Se o aluno escrever "mostra a solução": confirma o exercício, mostra a solução **desse exercício** com
+explicação linha a linha, e sugere que a escreva ele próprio de memória depois (sem copiar) para fixar.
+O desbloqueio vale só para essa resposta.

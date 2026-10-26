@@ -60,6 +60,13 @@ de 10⁻⁵.
 Em `Processor.cpp`: **TODO(1)** `mix`, **TODO(2)** `peak` (com `FloatVectorOperations`), **TODO(3)**
 `sumOfSquares` (com `SIMDRegister`, para qualquer alinhamento e tamanho).
 
+## Nota sobre as medições
+
+Os testes de velocidade assumem as opções de vírgula flutuante por omissão do MSVC (`/fp:precise`,
+as deste projeto). Com `/fp:fast` (ou `-ffast-math` noutros compiladores) o compilador pode, sozinho,
+tirar contas do ciclo ou vetorizar somas — a versão de referência fica mais rápida e a comparação
+deixa de dizer respeito ao teu código.
+
 ## Armadilhas comuns
 
 - **`fromRawArray` num ponteiro desalinhado**: em Debug, `jassert`; em Release, crash ou lentidão.

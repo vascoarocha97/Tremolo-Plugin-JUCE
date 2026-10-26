@@ -1,10 +1,12 @@
+// ⚠ SPOILER: este ficheiro implementa em TypeScript a matemática de um ou mais exercícios C++.
+//   Ler o código antes de fazeres o exercício equivale a ver a solução; usa a página no browser.
 import type { PageDef } from "./types";
 import { Plot, cssColor, audioFrequencyTicks, formatHz } from "../lib/plot";
 import { LoopPlayer } from "../lib/audio";
 import { controls, el, legend, p, panel, playButton, readout, select, slider, sources, toggle, callout } from "../lib/ui";
 import { TWO_PI, dbToGain, demoLoop, magnitudeSpectrumDb, quantise, seededRandom } from "../lib/dsp";
 
-/** Quantiza um sinal para N bits, com dither TPDF opcional (como o exercício 04). */
+/** Quantiza um sinal para N bits, com dither TPDF opcional. */
 function quantiseSignal(input: Float32Array, bits: number, dither: boolean, seed = 7): Float32Array {
   const rnd = seededRandom(seed);
   const lsb = 1 / Math.pow(2, bits - 1);

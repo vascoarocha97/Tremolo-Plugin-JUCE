@@ -113,6 +113,33 @@ TEST_CASE ("Desligar: volta ao sinal seco depois do crossfade", "[39]")
     REQUIRE (diff == 0.0f);
 }
 
+TEST_CASE ("Religar durante o crossfade de saída: volta a repetir (não fica mudo)", "[39]")
+{
+    Glitch g;
+    g.setSliceMs (100.0f);
+    g.setFadeMs (10.0f); // 480 amostras
+    g.prepare ({ fs, 512, 1 });
+
+    auto buffer = makeNoise (1, 48000, 0.5f);
+    processRange (g, buffer, 0, 9600);
+    g.setActive (true);
+    processRange (g, buffer, 9600, 4800);
+    g.setActive (false);
+    processRange (g, buffer, 14400, 100); // a meio da rampa de descida...
+    g.setActive (true);                   // ...o utilizador volta a carregar
+    for (int start = 14500; start < 48000; start += 500)
+        processRange (g, buffer, start, juce::jmin (500, 48000 - start));
+
+    REQUIRE (g.isRepeating());
+
+    // Mais de 100 ms depois tem de estar outra vez a repetir (periódico, período = fatia)
+    float diff = 0.0f;
+    for (int n = 24000; n + 4800 < 48000; ++n)
+        diff = juce::jmax (diff, std::abs (buffer.getSample (0, n + 4800) - buffer.getSample (0, n)));
+    REQUIRE (diff < 1.0e-6f);
+    REQUIRE (rms (buffer, 0, 24000) > 0.1);
+}
+
 TEST_CASE ("Ligar com fatia máxima e blocos irregulares: sem alocar, finito", "[39]")
 {
     Glitch g;

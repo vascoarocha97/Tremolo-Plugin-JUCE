@@ -42,9 +42,10 @@ function toAudioBuffer(ctx: AudioContext, channels: Float32Array[]): AudioBuffer
   const buffer = ctx.createBuffer(Math.max(1, channels.length), length, ctx.sampleRate);
 
   channels.forEach((data, ch) => {
-    // Proteção: nada de NaN/inf para a placa de som.
+    // Proteção: nada de NaN/inf e nada acima de 0 dBFS para a placa de som (o compressor da saída
+    // não é um limitador instantâneo; este corte é).
     const safe = new Float32Array(data.length);
-    for (let i = 0; i < data.length; i++) safe[i] = Number.isFinite(data[i]) ? data[i] : 0;
+    for (let i = 0; i < data.length; i++) safe[i] = Number.isFinite(data[i]) ? Math.max(-1, Math.min(1, data[i])) : 0;
     buffer.copyToChannel(safe, ch);
   });
 
@@ -72,7 +73,8 @@ export class LoopPlayer {
     const ctx = audioContext();
     await ctx.resume();
 
-    if (this.source) return;
+    // Se mudaste de página enquanto o contexto arrancava, o stopAll() já correu: não arranques.
+    if (this.source || !activePlayers.has(this)) return;
 
     this.startNew(ctx, 0.02);
     this.notify();

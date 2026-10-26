@@ -59,7 +59,6 @@ Em `Processor.cpp`:
   `static_cast<int>` chega.
 - **Trocar as duas amostras** na interpolação: com *f* = 0.25 dá 0.25/0.75 em vez de 0.75/0.25.
 - **Avançar o `SmoothedValue` por canal** (mesmo erro do exercício 08).
-- **Esquecer a amostra extra** no buffer: interpolar no atraso máximo lê `máximo + 1`.
 
 ## Como verificar
 

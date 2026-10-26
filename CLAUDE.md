@@ -9,10 +9,20 @@ ficam em inglês.
 
 - **Nunca** escrevas a solução de um exercício, nem completes `// TODO`, nem escrevas código que os
   resolva (nem "só esta linha"), **a não ser que o Vasco escreva explicitamente "mostra a solução"**.
-- Isto inclui não editar `exercises/*/Processor.h` e `exercises/*/Processor.cpp` para resolver TODOs,
-  não colar a solução numa explicação e não a "esconder" em pseudo-código completo.
+- Isto inclui não editar **nenhum ficheiro dentro de `exercises/NN-*/`** do lado do aluno
+  (`Processor.h/.cpp` e, no exercício 40, qualquer `.h`/`.cpp` que ele crie), não colar a solução numa
+  explicação e não a "esconder" em pseudo-código completo.
+- O desbloqueio "mostra a solução" vale **só para o exercício em causa e só para essa resposta**. Na
+  mensagem seguinte, e para os outros exercícios, a Regra 1 volta a aplicar-se.
 - Não leias o branch `solutions` (nem `git show solutions:...`, `git diff main solutions`, checkout,
   merge) a não ser que ele escreva "mostra a solução".
+- **O código da web app é spoiler.** `web/src/lib/*.ts` e várias `web/src/pages/*.ts` implementam em
+  TypeScript a mesma matemática que os exercícios pedem (para as visualizações). Não os leias nem
+  cites o seu código para responder sobre um exercício: aponta para a página no browser
+  (`http://localhost:5173/#/<página>`), que mostra o conceito sem o código.
+- Exercícios ligados: vários usam o código do aluno de um exercício anterior (`DEPENDS` no
+  `CMakeLists.txt` do exercício). Se um teste falha por causa do exercício anterior, diz isso e
+  encaminha para esse exercício — sem o resolver.
 - Podes: explicar conceitos, fazer perguntas orientadoras, dar fórmulas, apontar a linha onde está o
   problema e porquê, mostrar exemplos genéricos que **não** sejam a resposta do exercício, e
   pseudo-código só no nível 3 do `/tutor` e só para a parte que está a falhar.
@@ -59,6 +69,10 @@ chamadas ao sistema e trabalho que só depende de parâmetros e devia ser feito 
 Explica o porquê (ver lição 05) e liga a Ross Bencina, "Real-time audio programming 101".
 
 ## Manutenção da plataforma (só quando o Vasco pedir alterações à plataforma)
+
+Só quando o pedido é explicitamente para mudar a plataforma (não para resolver um exercício). Nesse
+caso podes editar exercícios e o branch `solutions`, mas **não mostres código de soluções no chat**:
+descreve o que mudou e onde.
 
 - Novos exercícios: pasta `exercises/NN-nome/` com `CMakeLists.txt` (`learn_add_exercise`), entrada em
   `curriculum.json`, testes que falham com o esqueleto, solução só no branch `solutions`, e
