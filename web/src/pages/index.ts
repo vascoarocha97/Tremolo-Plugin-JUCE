@@ -22,6 +22,10 @@ import { waveshapingPage } from "./waveshaping";
 import { bitcrushPage } from "./bitcrush";
 import { fftPage } from "./fft";
 import { oversamplingPage } from "./oversampling";
+import { combAllpassPage } from "./combAllpass";
+import { reverbPage } from "./reverb";
+import { fdnPage } from "./fdn";
+import { shimmerPage } from "./shimmer";
 
 export const pages: PageDef[] = [
   buffersPage,
@@ -44,4 +48,8 @@ export const pages: PageDef[] = [
   bitcrushPage,
   fftPage,
   oversamplingPage,
+  combAllpassPage,
+  reverbPage,
+  fdnPage,
+  shimmerPage,
 ];
