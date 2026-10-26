@@ -89,3 +89,22 @@ Formato: **Decisão** — porquê. Ordem cronológica.
 25. **`./learn smoke` em exercícios-plugin** só verifica que o `.vst3` existe e que o Standalone do JUCE
     abre e responde (o Standalone do JUCE não tem o modo `--smoke-test` do nosso host). O próprio build
     do VST3 já carrega o plugin (geração do `moduleinfo.json`).
+
+## Revisão independente (fase final)
+
+26. **O código da web app implementa a mesma matemática que os exercícios** (é o que gera as
+    visualizações e o som). Não há forma de mostrar um filtro a funcionar sem o calcular. Mitigações:
+    avisos de *spoiler* no topo dos ficheiros, sem etiquetas "(exercício NN)" no código, e regra no
+    `CLAUDE.md`/skills para o tutor nunca ler nem citar `web/src/lib` e `web/src/pages`. A alternativa
+    sugerida pela revisão (reescrever com nós nativos do Web Audio) foi registada como melhoria futura:
+    cobre filtros e delays, mas não FDN, glitch, bitcrusher, etc.
+27. **Deteção de alocações em Release**: fora de Debug só se substitui `operator new` (o `malloc` do
+    CRT de Release não tem hook). Nos exercícios em Release (36–38), o `learn check` corre também os
+    testes `*aloca*` numa build Debug, onde o hook do CRT apanha `malloc`/`realloc` (usados pelo
+    `juce::HeapBlock`).
+28. **Sem regras de permissões no `.claude/settings.json`**: a revisão sugeriu bloquear `git show
+    solutions*` com `permissions.deny`. Mexer em permissões é decisão tua; fica como recomendação no
+    `READY.md`.
+29. **Plugins 35/40 sem limitador**: o Standalone e o VST3 são os do JUCE; embrulhar o processador do
+    aluno noutro para limitar a saída esconderia os parâmetros ao host. Fica um aviso de volume no
+    README; os testes do 40 exigem saída finita e pico < 8.

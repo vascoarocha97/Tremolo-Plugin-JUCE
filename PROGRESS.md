@@ -51,14 +51,13 @@
 - **Documentação** ✔ — `SOURCES.md` completo (114 fontes, todas verificadas a 2026-10-26), desvios
   em `PLAN.md` (secção 10), `DECISIONS.md` 20–25, README com as regras dos exercícios especiais.
 
+- **Fase final** ✔ — revisão independente por três subagentes (lições 1–5, lições 6–10,
+  infraestrutura); achados corrigidos (commit "Correções da revisão independente") ou registados
+  (`DECISIONS.md` 26–29, `READY.md`). Teste de clone limpo OK. `READY.md` escrito.
+
 ## Falta
 
-- Revisão independente (subagente) e correções.
-- Teste de clone limpo, `READY.md`, commits finais.
-
-## Próximo passo
-
-Revisão independente por um subagente que não viu o trabalho.
+Nada da construção. Melhorias possíveis estão em `READY.md` e `DECISIONS.md` 26.
 
 ## Notas de trabalho (para quem retoma)
 
