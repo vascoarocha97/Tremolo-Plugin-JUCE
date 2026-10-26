@@ -17,11 +17,20 @@ namespace
 }
 
 HostComponent::HostComponent (std::unique_ptr<juce::AudioProcessor> processorToHost,
-                              const juce::String& exerciseNumber, const juce::String& page)
+                              const juce::String& number, const juce::String& page)
     : processor (std::move (processorToHost)),
       engine (*processor),
+      exerciseNumber (number),
       webPage (page)
 {
+    // ---- Estado guardado da última vez (como um DAW faz ao abrir um projeto) --------------------
+    {
+        juce::MemoryBlock state;
+
+        if (getProcessorStateFile().loadFileAsData (state) && state.getSize() > 0)
+            processor->setStateInformation (state.getData(), static_cast<int> (state.getSize()));
+    }
+
     // ---- Título --------------------------------------------------------------------------------
     titleLabel.setText (juce::String::fromUTF8 ("Exercício ") + exerciseNumber + juce::String::fromUTF8 (" · ")
                             + processor->getName(),
@@ -81,6 +90,21 @@ HostComponent::HostComponent (std::unique_ptr<juce::AudioProcessor> processorToH
     resetButton.setTooltip (juce::String::fromUTF8 ("Pára e volta a arrancar o áudio: chama outra vez prepareToPlay()"));
     resetButton.onClick = [this] { restartAudio(); };
     addAndMakeVisible (resetButton);
+
+    if (processor->getNumPrograms() > 1)
+    {
+        for (int i = 0; i < processor->getNumPrograms(); ++i)
+            programBox.addItem (processor->getProgramName (i), i + 1);
+
+        programBox.setTextWhenNothingSelected ("Preset...");
+        programBox.setTooltip (juce::String::fromUTF8 ("Programas do processador (setCurrentProgram)"));
+        programBox.onChange = [this]
+        {
+            if (programBox.getSelectedId() > 0)
+                processor->setCurrentProgram (programBox.getSelectedId() - 1);
+        };
+        addAndMakeVisible (programBox);
+    }
 
     // ---- Parâmetros do exercício ---------------------------------------------------------------
     // Editor próprio (exercícios com GUI) e/ou parâmetros genéricos. Os processadores dos exercícios
@@ -149,9 +173,32 @@ HostComponent::~HostComponent()
     // Ordem importa: primeiro parar o áudio, depois destruir o editor, por fim o processador.
     deviceManager.removeAudioCallback (&engine);
     deviceManager.closeAudioDevice();
+
+    // Guarda o estado do processador (getStateInformation), como um DAW ao gravar o projeto.
+    {
+        juce::MemoryBlock state;
+        processor->getStateInformation (state);
+
+        if (state.getSize() > 0)
+        {
+            getProcessorStateFile().getParentDirectory().createDirectory();
+            getProcessorStateFile().replaceWithData (state.getData(), state.getSize());
+        }
+    }
     parameterViewport.setViewedComponent (nullptr, false);
     genericEditor.reset();
+
+    // Contrato do JUCE: quem apaga o editor avisa primeiro o processador (os wrappers de plugin
+    // fazem o mesmo; o ~AudioProcessorEditor verifica-o com um jassert).
+    if (editor != nullptr)
+        processor->editorBeingDeleted (editor.get());
+
     editor.reset();
+}
+
+juce::File HostComponent::getProcessorStateFile() const
+{
+    return getDeviceSettingsFile().getSiblingFile ("state-ex" + exerciseNumber + ".bin");
 }
 
 juce::File HostComponent::getDeviceSettingsFile()
@@ -338,6 +385,8 @@ void HostComponent::resized()
     settingsButton.setBounds (row2.removeFromLeft (100));
     row2.removeFromLeft (8);
     resetButton.setBounds (row2.removeFromLeft (140));
+    row2.removeFromLeft (12);
+    programBox.setBounds (row2.removeFromLeft (200));
     area.removeFromTop (10);
 
     statusLabel.setBounds (area.removeFromBottom (24));

@@ -72,3 +72,68 @@ function(learn_add_exercise)
             FOLDER "exercises/${folder_name}")
     endif()
 endfunction()
+
+# learn_add_plugin() — um plugin a sério (VST3 + Standalone do JUCE), para os exercícios 35 e 40.
+#
+#   learn_add_plugin(
+#       NUMBER        35
+#       PRODUCT_NAME  "Learn JUCE Eco"
+#       PLUGIN_CODE   Lj35                       (4 caracteres, exatamente uma maiúscula)
+#       SOURCES       Processor.cpp PluginEntry.cpp ../32-apvts-parameters/Processor.cpp ...)
+#
+# Cria exNN_plugin (código partilhado), exNN_plugin_VST3 e exNN_plugin_Standalone, todos fora do ALL
+# (só compilam com ./learn run NN). O wrapper de plugin precisa de compilar os módulos JUCE com as
+# definições JucePlugin_* deste plugin, por isso aqui NÃO se usa learn_juce_modules: os módulos são
+# compilados outra vez para este alvo (ver DECISIONS.md, ponto 5). Por isso as fontes dos exercícios
+# anteriores entram como SOURCES (e não como bibliotecas).
+function(learn_add_plugin)
+    set(one_value_args NUMBER PRODUCT_NAME PLUGIN_CODE)
+    set(multi_value_args SOURCES)
+    cmake_parse_arguments(ARG "" "${one_value_args}" "${multi_value_args}" ${ARGN})
+
+    set(target "ex${ARG_NUMBER}_plugin")
+    get_filename_component(folder_name "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
+
+    juce_add_plugin(${target}
+        PRODUCT_NAME "${ARG_PRODUCT_NAME}"
+        COMPANY_NAME "Learn JUCE"
+        BUNDLE_ID "com.learnjuce.${target}"
+        VERSION "${PROJECT_VERSION}"
+        PLUGIN_MANUFACTURER_CODE Lrnj
+        PLUGIN_CODE ${ARG_PLUGIN_CODE}
+        FORMATS VST3 Standalone
+        IS_SYNTH FALSE
+        NEEDS_MIDI_INPUT FALSE
+        NEEDS_MIDI_OUTPUT FALSE
+        COPY_PLUGIN_AFTER_BUILD FALSE
+        VST3_CATEGORIES Fx)
+
+    target_sources(${target} PRIVATE ${ARG_SOURCES})
+
+    target_compile_definitions(${target}
+        PUBLIC
+            JUCE_WEB_BROWSER=0
+            JUCE_USE_CURL=0
+            JUCE_VST3_CAN_REPLACE_VST2=0
+            JUCE_STRICT_REFCOUNTEDPOINTER=1)
+
+    target_compile_options(${target} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/utf-8>)
+
+    target_link_libraries(${target}
+        PRIVATE
+            juce::juce_audio_utils
+            juce::juce_dsp
+        PUBLIC
+            juce::juce_recommended_config_flags
+            juce::juce_recommended_warning_flags)
+
+    foreach(t ${target} ${target}_VST3 ${target}_Standalone)
+        if(TARGET ${t})
+            set_target_properties(${t} PROPERTIES EXCLUDE_FROM_ALL TRUE FOLDER "exercises/${folder_name}")
+        endif()
+    endforeach()
+
+    if(TARGET ${target}_All)
+        set_target_properties(${target}_All PROPERTIES EXCLUDE_FROM_ALL TRUE FOLDER "exercises/${folder_name}")
+    endif()
+endfunction()

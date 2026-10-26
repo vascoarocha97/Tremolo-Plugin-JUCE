@@ -26,6 +26,7 @@ import { combAllpassPage } from "./combAllpass";
 import { reverbPage } from "./reverb";
 import { fdnPage } from "./fdn";
 import { shimmerPage } from "./shimmer";
+import { pluginArchitecturePage } from "./pluginArchitecture";
 
 export const pages: PageDef[] = [
   buffersPage,
@@ -52,4 +53,5 @@ export const pages: PageDef[] = [
   reverbPage,
   fdnPage,
   shimmerPage,
+  pluginArchitecturePage,
 ];

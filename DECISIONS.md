@@ -65,3 +65,27 @@ Formato: **Decisão** — porquê. Ordem cronológica.
 19. **Estilo de código JUCE nos exercícios** — o `.clang-format` da raiz (estilo Chromium) é do curso do
     tremolo. `exercises/` e `shared/` têm um `.clang-format` próprio próximo do estilo do JUCE (Allman,
     4 espaços, espaço antes de parênteses), para o código parecer código JUCE.
+
+## Fases 3–5 (módulos 4–8)
+
+20. **`DEPENDS` entre exercícios** — quando um exercício usa código de um anterior (tremolo ← LFO,
+    reverb de Schroeder ← comb/allpass, plugin ← parâmetros/estado/editor), liga à biblioteca do
+    exercício anterior (`$<LINK_ONLY:exNN_dsp>`) e inclui o header por caminho relativo. Assim usa o
+    código **do aluno**, e nenhuma solução aparece no `main`. Consequência: se o exercício anterior
+    estiver por fazer, os testes do seguinte falham — os READMEs dizem isso.
+21. **Módulo 8 é um único plugin de eco construído em 4 passos** (32 parâmetros, 33 estado, 34 editor,
+    35 VST3). O DSP do eco (`EchoEngine`) vem feito: o foco do módulo é a arquitetura de plugin. As
+    classes `StatefulEchoProcessor` (33) e `EditorEchoProcessor` (34) são dadas e mostram como cada peça
+    se liga ao `juce::AudioProcessor`.
+22. **`learn_add_plugin` compila as fontes dos exercícios 32–34 diretamente no alvo do plugin** (e não
+    as bibliotecas), porque o alvo de plugin compila os seus próprios módulos JUCE (ponto 5).
+23. **O standalone partilhado grava o estado do processador ao fechar** (`getStateInformation` para
+    `%APPDATA%\LearnJuce\state-exNN.bin`) e repõe-no ao abrir, como um DAW; mostra uma caixa de presets
+    quando o processador tem programas. Também passou a chamar `editorBeingDeleted()` antes de apagar o
+    editor (contrato do JUCE 9, verificado em `juce_AudioProcessorEditor.cpp`).
+24. **Testes com APVTS/GUI usam `juce::ScopedJuceInitialiser_GUI`** — o APVTS usa um `Timer` e os
+    attachments atualizam componentes na message thread. Nos testes, a thread principal é a message
+    thread, por isso os attachments atualizam de forma síncrona e dá para verificar logo a seguir.
+25. **`./learn smoke` em exercícios-plugin** só verifica que o `.vst3` existe e que o Standalone do JUCE
+    abre e responde (o Standalone do JUCE não tem o modo `--smoke-test` do nosso host). O próprio build
+    do VST3 já carrega o plugin (geração do `moduleinfo.json`).

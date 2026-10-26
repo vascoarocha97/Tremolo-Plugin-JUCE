@@ -158,3 +158,16 @@ table.exercises .summary { color: var(--text-muted); font-size: 0.85rem; }
 
 .legend { display: flex; gap: 16px; font-size: 0.82rem; color: var(--text-muted); margin-top: 6px; flex-wrap: wrap; }
 .legend span::before { content: ""; display: inline-block; width: 12px; height: 3px; margin-right: 6px; vertical-align: middle; background: var(--c); }
+
+pre.code-block {
+  margin: 12px 0 0;
+  padding: 12px 14px;
+  background: var(--bg-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+  overflow-x: auto;
+  white-space: pre;
+}

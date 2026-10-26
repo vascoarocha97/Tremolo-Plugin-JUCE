@@ -13,6 +13,11 @@ namespace learn::test
 template <typename P>
 concept BufferProcessor = requires (P& p, juce::AudioBuffer<float>& b) { p.processBlock (b); };
 
+/** Processadores com a interface completa do juce::AudioProcessor: processBlock (AudioBuffer&, MidiBuffer&)
+    (módulo 8: plugins). */
+template <typename P>
+concept PluginProcessor = requires (P& p, juce::AudioBuffer<float>& b, juce::MidiBuffer& m) { p.processBlock (b, m); };
+
 /** Processadores com a convenção juce::dsp: process (ProcessContextReplacing<float>). */
 template <typename P>
 concept DspProcessor = requires (P& p, const juce::dsp::ProcessContextReplacing<float>& c) { p.process (c); };
@@ -33,13 +38,23 @@ void processRange (Processor& processor, juce::AudioBuffer<float>& buffer, int s
     }
     else
     {
-        static_assert (BufferProcessor<Processor>, "O processador precisa de processBlock() ou process()");
+        static_assert (BufferProcessor<Processor> || PluginProcessor<Processor>,
+                       "O processador precisa de processBlock() ou process()");
 
         // Este construtor do AudioBuffer *referencia* os dados existentes (não copia, não aloca
         // para até 32 canais).
         juce::AudioBuffer<float> view (buffer.getArrayOfWritePointers(), buffer.getNumChannels(),
                                        start, num);
-        processor.processBlock (view);
+
+        if constexpr (BufferProcessor<Processor>)
+        {
+            processor.processBlock (view);
+        }
+        else
+        {
+            juce::MidiBuffer midi; // vazio: não aloca
+            processor.processBlock (view, midi);
+        }
     }
 }
 

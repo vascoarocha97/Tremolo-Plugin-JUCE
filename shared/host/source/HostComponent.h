@@ -32,11 +32,12 @@ private:
     void restartAudio();
     void updateSourceControls();
     static juce::File getDeviceSettingsFile();
+    juce::File getProcessorStateFile() const;
 
     std::unique_ptr<juce::AudioProcessor> processor;
     HostAudioEngine engine;
     juce::AudioDeviceManager deviceManager;
-    juce::String webPage;
+    juce::String exerciseNumber, webPage;
 
     juce::Label titleLabel, statusLabel, parametersLabel;
     juce::TextButton webButton { juce::String::fromUTF8 ("Abrir visualização (web)") };
@@ -47,6 +48,7 @@ private:
     juce::ToggleButton bypassButton { "Bypass (A/B)" };
     juce::TextButton settingsButton { juce::String::fromUTF8 ("Áudio...") };
     juce::TextButton resetButton { juce::String::fromUTF8 ("Reiniciar áudio") };
+    juce::ComboBox programBox; // só aparece se o processador tiver programas (presets), exercício 33+
 
     juce::Viewport parameterViewport;
     juce::Component parameterContent; // editor próprio do exercício (se houver) + parâmetros genéricos

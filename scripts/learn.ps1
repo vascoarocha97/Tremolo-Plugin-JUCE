@@ -585,6 +585,24 @@ function Command-Smoke ([string] $selector)
         if (-not (Invoke-Build (Get-RunTargets $exercise) $config)) { $failures++; continue }
 
         $exe = Find-AppExecutable $exercise $config
+
+        if ($exercise.PSObject.Properties.Name -contains "runTargets")
+        {
+            # Plugin (exercícios 35 e 40): o Standalone é o do JUCE, sem modo de verificação.
+            # Verifica que o VST3 existe e que o Standalone abre e responde.
+            $vst3 = Get-ChildItem -Path (Join-Path $BuildDir "exercises\$($exercise.folder)") -Recurse -Filter "*.vst3" -Directory -ErrorAction SilentlyContinue |
+                    Where-Object { $_.FullName -like "*\$config\*" } | Select-Object -First 1
+            $process = Start-Process -FilePath $exe -PassThru
+            Start-Sleep -Seconds 5
+            $process.Refresh()
+            $alive = (-not $process.HasExited) -and $process.Responding
+            if (-not $process.HasExited) { Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue }
+
+            if ($vst3 -and $alive) { Write-Good ("  ✔ VST3 compilado ({0}) e Standalone abre" -f $vst3.Name) }
+            else { $failures++; Write-Bad "  ✘ VST3 em falta ou o Standalone não abriu" }
+            continue
+        }
+
         $resultFile = Join-Path $LogDir ("smoke-ex" + $exercise.id + ".json")
         Remove-Item $resultFile -ErrorAction SilentlyContinue
 
