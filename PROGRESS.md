@@ -4,7 +4,7 @@
 
 ## Feito
 
-- **Fase 0** (em curso)
+- **Fase 0** ✔ (commit 39c56c4)
   - Pesquisa: JUCE 9.0.4 (estável mais recente), Catch2 v3.16.1, padrão de biblioteca estática única.
   - `PLAN.md`, `DECISIONS.md`, `CLAUDE.md`, skills `/tutor` e `/explica`.
   - CMake: `LearnDependencies`, `LearnJuceModules`, `LearnExercise`, presets.
@@ -13,16 +13,23 @@
   - `learn` (`check`, `run`, `web`, `list`, `smoke`, `update-starter-hashes`).
   - Exercício 01 completo (lição, TODO, testes, standalone).
 
+- **Fase 1** ✔ — exercícios 02–13 (módulos 1–3): lição, TODO, testes, standalone, solução no
+  branch `solutions`. Verificado: soluções passam 13/13; esqueletos compilam e falham; smoke test dos
+  13 standalones OK (abrem e produzem som a 48 kHz).
+  - Melhorias ao `learn`: reconfigura sozinho com exercícios novos; deteta crashes dos testes
+    (sem janelas de erro do MSVC: `shared/testing/source/TestEnvironment.cpp`).
+
 ## Falta
 
-- Fase 1: exercícios 02–13.
 - Fase 2: web app (Vite + TS) com páginas dos módulos 1–3 + progresso.
 - Fases 3–9: módulos 4–10.
 - Revisão independente, teste de clone limpo, `READY.md`.
 
 ## Próximo passo
 
-Commit da fase 0 no `main`; criar o branch `solutions` (worktree em `C:\Vasco\Learn\sol`).
+Fase 2: web app (Vite 8 + TypeScript 7, sem framework) com as páginas dos módulos 1–3
+(`buffers`, `sampling`, `nyquist-aliasing`, `bit-depth`, `realtime`, `decibels`, `pan-laws`,
+`smoothing`, `delay-line`, `fractional-delay`, `feedback-delay`) e a página inicial com progresso.
 
 ## Notas de trabalho (para quem retoma)
 

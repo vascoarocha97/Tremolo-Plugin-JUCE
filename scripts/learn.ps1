@@ -345,21 +345,33 @@ function Invoke-Tests ($exercise, [string] $config)
     $info.Arguments = "--order decl --reporter junit::out=ex$($exercise.id)-junit.xml --reporter console::out=ex$($exercise.id)-tests.txt::colour-mode=none"
     $info.UseShellExecute = $false
     $info.CreateNoWindow = $true
+    $info.RedirectStandardOutput = $true
+    $info.RedirectStandardError = $true
 
     $process = [System.Diagnostics.Process]::Start($info)
+    $stdoutTask = $process.StandardOutput.ReadToEndAsync()
+    $stderrTask = $process.StandardError.ReadToEndAsync()
 
     if (-not $process.WaitForExit(180000))
     {
         $process.Kill()
-        return @{ timedOut = $true; cases = @(); exitCode = -1; consoleLog = $consoleLog }
+        return @{ timedOut = $true; cases = @(); exitCode = -1; consoleLog = $consoleLog; stderr = "" }
     }
+
+    $stderr = $stderrTask.Result + $stdoutTask.Result
 
     $cases = [ordered] @{}
 
+    $xml = $null
+
     if (Test-Path $junit)
     {
-        [xml] $xml = Get-Content -Raw -Encoding UTF8 $junit
+        # Se o processo rebentou a meio, o XML pode estar incompleto
+        try { $xml = [xml] (Get-Content -Raw -Encoding UTF8 $junit) } catch { $xml = $null }
+    }
 
+    if ($xml)
+    {
         foreach ($case in $xml.SelectNodes("//testcase"))
         {
             # Catch2 junta as secções ao nome com '/'; agrupamos pelo TEST_CASE
@@ -378,7 +390,7 @@ function Invoke-Tests ($exercise, [string] $config)
         }
     }
 
-    return @{ timedOut = $false; cases = @($cases.Values); exitCode = $process.ExitCode; consoleLog = $consoleLog }
+    return @{ timedOut = $false; cases = @($cases.Values); exitCode = $process.ExitCode; consoleLog = $consoleLog; stderr = $stderr }
 }
 
 function Show-TestResults ($result, [switch] $Detailed)
@@ -443,9 +455,15 @@ function Invoke-Check ($exercise, [switch] $Detailed, [switch] $Quiet)
 
     if ($total -eq 0)
     {
-        Write-Bad "  Não encontrei resultados de testes (o executável terminou com código $($result.exitCode))."
-        Write-Note "  Output: $($result.consoleLog)"
-        $failures = @("(sem resultados: o programa terminou antes do fim?)")
+        Write-Bad "  Os testes terminaram antes do fim (código $($result.exitCode)): provavelmente um crash,"
+        Write-Bad "  por exemplo um acesso fora de um buffer/array. Últimas linhas:"
+
+        $tail = @()
+        if (Test-Path $result.consoleLog) { $tail += Get-Content $result.consoleLog | Select-Object -Last 8 }
+        if ($result.stderr) { $tail += ($result.stderr -split "`n") | Where-Object { $_.Trim() -ne "" } | Select-Object -Last 8 }
+        $tail | ForEach-Object { Write-Host ("      " + (Format-CompilerLine $_)) -ForegroundColor DarkYellow }
+
+        $failures = @("(crash: os testes terminaram antes do fim)")
     }
 
     if (-not $Quiet) { Show-TestResults $result -Detailed:$Detailed }

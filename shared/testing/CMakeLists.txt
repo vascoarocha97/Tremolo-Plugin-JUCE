@@ -6,6 +6,7 @@
 
 add_library(learn_testing OBJECT
     source/AllocationTracker.cpp
+    source/TestEnvironment.cpp
     include/learn_testing/RealtimeChecks.h
     include/learn_testing/Signals.h
     include/learn_testing/Measurements.h
