@@ -15,9 +15,11 @@ namespace
 
     // Frequências que caem exatamente no centro de um bin (e os harmónicos também): sem "fugas"
     // da janela, o que sobra fora dos harmónicos é mesmo aliasing.
-    const double f1k = Spectrum::binFrequency (341, order, fs);   // ≈ 999 Hz
-    const double f5k = Spectrum::binFrequency (1707, order, fs);  // ≈ 5001 Hz
-    const double f100 = Spectrum::binFrequency (34, order, fs);   // ≈ 99.6 Hz
+    // (calculadas aqui, e não com a tua binFrequency, para um erro nela não estragar os outros testes)
+    constexpr double binWidth = fs / (1 << order);
+    constexpr double f1k = 341 * binWidth;   // ≈ 999 Hz
+    constexpr double f5k = 1707 * binWidth;  // ≈ 5001 Hz
+    constexpr double f100 = 34 * binWidth;   // ≈ 99.6 Hz
 
     std::vector<float> clippedSine (double f0, float drive, bool hard)
     {
