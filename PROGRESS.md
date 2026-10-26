@@ -19,17 +19,21 @@
   - Melhorias ao `learn`: reconfigura sozinho com exercícios novos; deteta crashes dos testes
     (sem janelas de erro do MSVC: `shared/testing/source/TestEnvironment.cpp`).
 
+- **Fase 2** ✔ — web app (`web/`, Vite 8.3.5 + TypeScript 7.0.2, sem framework): página inicial com
+  progresso (lê `/progress.json` a cada 5 s via middleware do Vite) e 11 páginas dos módulos 1–3
+  (`buffers`, `sampling`, `nyquist-aliasing`, `bit-depth`, `realtime`, `decibels`, `pan-laws`,
+  `smoothing`, `delay-line`, `fractional-delay`, `feedback-delay`). Verificado: `npm run build`
+  (tsc + vite) sem erros; todas as páginas abrem sem erros de consola; todos os botões ▶ geram e
+  tocam áudio; o progresso atualiza ao vivo. Capturas: Edge headless.
+
 ## Falta
 
-- Fase 2: web app (Vite + TS) com páginas dos módulos 1–3 + progresso.
-- Fases 3–9: módulos 4–10.
+- Fases 3–9: módulos 4–10 (exercícios 14–40 + páginas da web app).
 - Revisão independente, teste de clone limpo, `READY.md`.
 
 ## Próximo passo
 
-Fase 2: web app (Vite 8 + TypeScript 7, sem framework) com as páginas dos módulos 1–3
-(`buffers`, `sampling`, `nyquist-aliasing`, `bit-depth`, `realtime`, `decibels`, `pan-laws`,
-`smoothing`, `delay-line`, `fractional-delay`, `feedback-delay`) e a página inicial com progresso.
+Fase 3: módulo 4 (filtros, exercícios 14–17) + páginas `one-pole`, `biquad`, `svf`.
 
 ## Notas de trabalho (para quem retoma)
 

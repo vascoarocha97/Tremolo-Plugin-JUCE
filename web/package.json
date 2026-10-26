@@ -1,0 +1,21 @@
+{
+  "name": "learn-juce-web",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Web app de teoria interativa do curso Learn JUCE",
+  "type": "module",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5"
+  }
+}

@@ -662,7 +662,7 @@ function Command-Web
         }
 
         Write-Title "Web app em http://localhost:5173  (Ctrl+C para parar)"
-        & npm run dev
+        & npm run dev -- --open
     }
     finally { Pop-Location }
 }
