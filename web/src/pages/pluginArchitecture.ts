@@ -246,7 +246,7 @@ export const pluginArchitecturePage: PageDef = {
         oldStateInfo,
       ),
       el("h2", {}, "4. Ouvir: zipper noise"),
-      p("Um \"LFO\" de ganho que o host atualiza bloco a bloco. Sem smoothing, cada degrau é um clique — com blocos grandes ouve-se um zumbido à frequência dos blocos (o "zipper noise"). Com smoothing de 20 ms desaparece."),
+      p("Um \"LFO\" de ganho que o host atualiza bloco a bloco. Sem smoothing, cada degrau é um clique — com blocos grandes ouve-se um zumbido à frequência dos blocos (o \"zipper noise\"). Com smoothing de 20 ms desaparece."),
       panel(
         controls(
           sourceSelect(source, (v) => { source = v; player.refresh(); }, ["sine", "loop", "noise"]),
