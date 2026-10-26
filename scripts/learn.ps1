@@ -249,7 +249,7 @@ function Read-JsonFile ([string] $path)
     return (Get-Content -Raw -Encoding UTF8 $path | ConvertFrom-Json)
 }
 
-# SHA-256 do conteúdo sem '': o mesmo hash com finais de linha LF ou CRLF (core.autocrlf).
+# SHA-256 do conteúdo sem CR (0x0D): o mesmo hash com finais de linha LF ou CRLF (core.autocrlf).
 function Get-NormalizedHash ([string] $path)
 {
     $bytes = [IO.File]::ReadAllBytes($path)
