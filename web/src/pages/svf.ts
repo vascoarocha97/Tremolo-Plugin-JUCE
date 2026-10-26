@@ -93,7 +93,7 @@ export const svfPage: PageDef = {
       ),
       callout("O cálculo (exercício 16): `HP = h·(x − s1·(g + R2) − s2)`, depois os dois integradores trapezoidais. É o mesmo que o `juce::dsp::StateVariableTPTFilter`."),
       sources([
-        { title: "V. Zavalishin — The Art of VA Filter Design", url: "https://www.native-instruments.com/fileadmin/ni_media/downloads/pdf/VAFilterDesign_2.1.0.pdf", why: "TPT, ciclos sem atraso e o SVF" },
+        { title: "V. Zavalishin — The Art of VA Filter Design", url: "https://www.discodsp.net/VAFilterDesign_2.1.2.pdf", why: "TPT, ciclos sem atraso e o SVF" },
         { title: "A. Simper (Cytomic) — Linear Trapezoidal Integrated SVF", url: "https://cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf", why: "a versão otimizada" },
         { title: "juce::dsp::StateVariableTPTFilter", url: "https://docs.juce.com/master/classjuce_1_1dsp_1_1StateVariableTPTFilter.html", why: "a implementação do JUCE" },
       ]),

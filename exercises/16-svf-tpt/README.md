@@ -75,9 +75,10 @@ Em `Processor.cpp`: **TODO(1)** `setParameters` (g, R2, h, com limites) e **TODO
 
 ## Para saber mais
 
-- Vadim Zavalishin, [*The Art of VA Filter Design* (Native Instruments, rev. 2.1.0)](https://www.native-instruments.com/fileadmin/ni_media/downloads/pdf/VAFilterDesign_2.1.0.pdf) —
+- Vadim Zavalishin, [*The Art of VA Filter Design* (rev. 2.1.2, PDF)](https://www.discodsp.net/VAFilterDesign_2.1.2.pdf) —
   o livro de referência sobre TPT (capítulos sobre integradores trapezoidais, ciclos sem atraso e o SVF).
-  (A ligação ao site da NI falhou durante a minha verificação automática; o ficheiro aparece nos resultados de pesquisa.)
+  (O PDF original no site da Native Instruments, rev. 2.1.0, deu 404 em 2026-10-26; esta é a revisão
+  2.1.2, num espelho anunciado no fórum KVR. O livro permite cópias integrais e não modificadas.)
 - Andrew Simper (Cytomic), ["Linear Trapezoidal Integrated SVF"](https://cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf) —
   a versão otimizada, com as fórmulas para todos os tipos de saída.
 - [juce::dsp::StateVariableTPTFilter — documentação](https://docs.juce.com/master/classjuce_1_1dsp_1_1StateVariableTPTFilter.html).

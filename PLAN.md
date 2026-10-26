@@ -177,7 +177,7 @@ Tempo estimado entre parênteses. "Testes" resume o que os testes verificam.
 - Uma página por conceito (Canvas 2D + Web Audio), cada uma com fontes:
   `sampling`, `nyquist-aliasing`, `bit-depth`, `buffers`, `realtime`, `decibels`, `pan-laws`, `smoothing`,
   `delay-line`, `fractional-delay`, `feedback-delay`, `one-pole`, `biquad`, `svf`, `lfo`,
-  `chorus-flanger`, `waveshaping`, `aliasing-distortion`, `oversampling`, `bitcrush`, `fft`,
+  `chorus-flanger`, `waveshaping`, `aliasing-distortion` (ver secção 10), `oversampling`, `bitcrush`, `fft`,
   `comb-allpass`, `reverb`, `fdn`, `shimmer`, `plugin-architecture`, `performance`, `pedal`.
 
 ## 7. Comando `learn`
@@ -215,3 +215,28 @@ Tempo estimado entre parênteses. "Testes" resume o que os testes verificam.
 Critérios de "fase concluída": no `solutions` todos os testes passam; no `main` tudo compila e os testes
 de cada exercício novo falham; cada standalone abre e produz som; a web app compila e lê
 `progress.json`; o README funciona a partir de um clone limpo.
+
+## 10. Desvios ao plano (registados durante a construção)
+
+O plano acima ficou como foi escrito no início. O que mudou, e porquê (detalhe em `DECISIONS.md`):
+
+- **Página `aliasing-distortion`** não existe à parte: o aliasing causado pela distorção é mostrado nas
+  páginas `waveshaping` (espectro com riscas dobradas), `fft` (medir) e `oversampling` (corrigir). Uma
+  página separada repetiria as mesmas visualizações.
+- **Reutilizar código de exercícios anteriores**: em vez de "o esqueleto pede para copiar a solução
+  do aluno" (secção 4), os exercícios que dependem de outros ligam ao código do aluno com
+  `learn_add_exercise(... DEPENDS NN)` (ex.: 19–21 usam o LFO do 18; 28 usa o comb/allpass do 27; 30–31
+  a FDN do 29; 33–35 o eco do 32). Menos cópias; consequência: no `main`, um exercício só passa
+  depois de o anterior estar feito (os READMEs avisam).
+- **Módulo 8** é um único plugin de eco construído em quatro passos (32 → 35), com o DSP já feito, para
+  o foco ficar na arquitetura de plugin.
+- **Exercício 40** não tem TODOs: tem uma especificação no README e testes de caixa preta; os ficheiros
+  da pasta entram no build por *glob*, para o aluno organizar o código como quiser.
+- **Alvos dos plugins** chamam-se `exNN_plugin_VST3` / `exNN_plugin_Standalone` (função
+  `learn_add_plugin`); o `./learn smoke` dos plugins verifica o `.vst3` e que o Standalone do JUCE abre.
+- **Host partilhado** ganhou, a meio, gravação do estado do processador ao fechar, caixa de presets
+  (programas) e a chamada a `editorBeingDeleted()` exigida pelo JUCE 9.
+- **Módulo 9** compila em Release (`"config": "Release"` no `curriculum.json`); os testes de velocidade
+  só exigem a aceleração em Release (em Debug mostram um aviso).
+- **Fontes**: o PDF original do livro do Zavalishin no site da Native Instruments deu 404; usa-se a
+  revisão 2.1.2 num espelho (ver `SOURCES.md`).

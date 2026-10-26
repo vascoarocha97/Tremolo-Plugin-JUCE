@@ -42,15 +42,23 @@
   estado persistente e caixa de presets. Verificado no `solutions`: 35/35; smoke 32–35 OK (o VST3
   compila e o JUCE carrega-o para gerar o `moduleinfo.json`; o Standalone abre).
 
+- **Fase 8** ✔ — módulo 9 (performance, 36–38, Release: medir CPU, SIMD, evitar trabalho) e página
+  `performance`. Verificado no `solutions` em Release; smoke OK.
+
+- **Fase 9** ✔ — módulo 10 (39 glitch, 40 pedal escrito do zero com especificação + testes de caixa
+  preta, VST3) e página `pedal`. Verificado no `solutions`: **40/40** exercícios passam; smoke 1–40 OK.
+
+- **Documentação** ✔ — `SOURCES.md` completo (114 fontes, todas verificadas a 2026-10-26), desvios
+  em `PLAN.md` (secção 10), `DECISIONS.md` 20–25, README com as regras dos exercícios especiais.
+
 ## Falta
 
-- Módulos 9 (performance, 36–38) e 10 (pedal, 39–40) + páginas `performance` e `pedal`.
-- `SOURCES.md` completo; desvios no `PLAN.md`.
-- Revisão independente, teste de clone limpo, `READY.md`.
+- Revisão independente (subagente) e correções.
+- Teste de clone limpo, `READY.md`, commits finais.
 
 ## Próximo passo
 
-Módulo 9 (performance, exercícios 36–38, config Release) + página `performance`.
+Revisão independente por um subagente que não viu o trabalho.
 
 ## Notas de trabalho (para quem retoma)
 

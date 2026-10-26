@@ -78,6 +78,20 @@ no Windows a política de execução por omissão bloqueia scripts `.ps1`.
 5. Encravado? No Claude Code: `/tutor NN` (pistas por níveis, sem dar a solução) ou
    `/explica <conceito>`.
 
+### Exercícios com regras próprias
+
+- **36–38 (performance)** compilam em **Release** (o `./learn` trata disso): medir velocidade em Debug
+  não diz nada. Os testes de velocidade só contam em Release.
+- **35 e 40 (plugins)**: `./learn run` compila um **VST3** e um Standalone (o do JUCE, sem fonte de teste:
+  usa a entrada da placa, que vem silenciada — *Options → Audio/MIDI Settings*). O `.vst3` fica em
+  `build\exercises\NN-...\exNN_plugin_artefacts\Debug\VST3\`; para um DAW o encontrar, copia-o para
+  `%LOCALAPPDATA%\Programs\Common\VST3`.
+- **40 (o pedal)** não tem TODOs: o README é uma especificação e os testes verificam-na "de fora".
+  Qualquer `.h`/`.cpp` que criares na pasta entra no build.
+- Alguns exercícios usam o **teu** código de um exercício anterior (ex.: o tremolo do 19 usa o LFO do
+  18). Se o anterior não estiver feito, os testes do seguinte também falham — o README de cada um diz
+  de quais depende.
+
 ## 5. Abrir no VS Code
 
 1. `File → Open Folder...` e escolhe a pasta do repositório.
