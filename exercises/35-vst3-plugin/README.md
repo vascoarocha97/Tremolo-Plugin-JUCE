@@ -84,7 +84,9 @@ Em `Processor.cpp`: **TODO(1)** `isBusesLayoutSupported`, **TODO(2)** `getTailLe
 O VST3 fica em `build\exercises\35-vst3-plugin\ex35_plugin_artefacts\Debug\VST3\Learn JUCE Eco.vst3`.
 Para um DAW o encontrar, copia a pasta `.vst3` para `%LOCALAPPDATA%\Programs\Common\VST3` (pasta do
 utilizador, não precisa de administrador) ou `C:\Program Files\Common Files\VST3`, ou acrescenta a pasta
-de build às pastas de plugins do teu DAW. Em `Debug`, o plugin é mais lento e o JUCE avisa com
+de build às pastas de plugins do teu DAW. O Standalone do JUCE não tem fonte de teste: usa a entrada
+da placa de som, que vem **silenciada** por omissão (para evitar realimentação microfone → colunas): em
+*Options → Audio/MIDI Settings*, desliga "Mute audio input" — com auscultadores. Em `Debug`, o plugin é mais lento e o JUCE avisa com
 `jassert`s se algo estiver mal — é o que queres enquanto desenvolves.
 
 ## Armadilhas comuns

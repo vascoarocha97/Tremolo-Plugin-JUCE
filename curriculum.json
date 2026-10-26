@@ -140,7 +140,7 @@
           "summary": "Stutter / beat-repeat com crossfades sem clicks." },
         { "id": "40", "folder": "40-pedal", "title": "O pedal", "minutes": 300, "web": "pedal",
           "summary": "Fuzz + crush + glitch + reverb, escrito do zero, como plugin VST3.",
-          "runTargets": ["ex40_pedal_Standalone", "ex40_pedal_VST3"] }
+          "runTargets": ["ex40_plugin_Standalone", "ex40_plugin_VST3"] }
       ]
     }
   ]

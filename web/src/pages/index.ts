@@ -28,6 +28,7 @@ import { fdnPage } from "./fdn";
 import { shimmerPage } from "./shimmer";
 import { pluginArchitecturePage } from "./pluginArchitecture";
 import { performancePage } from "./performance";
+import { pedalPage } from "./pedal";
 
 export const pages: PageDef[] = [
   buffersPage,
@@ -56,4 +57,5 @@ export const pages: PageDef[] = [
   shimmerPage,
   pluginArchitecturePage,
   performancePage,
+  pedalPage,
 ];
