@@ -26,14 +26,21 @@
   (tsc + vite) sem erros; todas as páginas abrem sem erros de consola; todos os botões ▶ geram e
   tocam áudio; o progresso atualiza ao vivo. Capturas: Edge headless.
 
+- **Fases 3–5** ✔ — módulos 4 (filtros, 14–17), 5 (modulação, 18–21) e 6 (distorção, 22–26), com as páginas
+  `one-pole`, `biquad`, `svf`, `lfo`, `chorus-flanger`, `waveshaping`, `bitcrush`, `fft`, `oversampling`.
+  - `learn_add_exercise(... DEPENDS NN)`: exercícios que usam o código do aluno de outro exercício
+    (19–21 usam o LFO do 18; 23 e 26 as curvas do 22; 24 o quantizador do 04). No `main`, estes só
+    passam depois de o exercício de que dependem estar feito — testar as soluções sempre no worktree `solutions`.
+  - Verificado no `solutions`: 26/26 exercícios passam; smoke test dos standalones 1–26 OK.
+
 ## Falta
 
-- Fases 3–9: módulos 4–10 (exercícios 14–40 + páginas da web app).
+- Fases 6–9: módulos 7–10 (exercícios 27–40 + páginas da web app).
 - Revisão independente, teste de clone limpo, `READY.md`.
 
 ## Próximo passo
 
-Fase 3: módulo 4 (filtros, exercícios 14–17) + páginas `one-pole`, `biquad`, `svf`.
+Módulo 7 (reverb, exercícios 27–31) + páginas `comb-allpass`, `reverb`, `fdn`, `shimmer`.
 
 ## Notas de trabalho (para quem retoma)
 
