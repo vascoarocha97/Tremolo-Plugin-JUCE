@@ -239,3 +239,100 @@ export function demoLoop(sampleRate: number): Float32Array[] {
   }
   return [left, right];
 }
+
+// ---- Filtros (módulo 4) -----------------------------------------------------------------------
+
+export interface Biquad {
+  b0: number;
+  b1: number;
+  b2: number;
+  a1: number;
+  a2: number;
+}
+
+export type BiquadType = "lowPass" | "highPass" | "bandPass" | "notch" | "peaking" | "lowShelf" | "highShelf";
+
+/** Coeficientes do Audio EQ Cookbook (RBJ), normalizados por a0 — como no exercício 15. */
+export function rbj(type: BiquadType, sampleRate: number, f0: number, q: number, gainDb = 0): Biquad {
+  const w0 = (TWO_PI * f0) / sampleRate;
+  const c = Math.cos(w0);
+  const alpha = Math.sin(w0) / (2 * q);
+  const A = Math.pow(10, gainDb / 40);
+  const k = 2 * Math.sqrt(A) * alpha;
+  let r: [number, number, number, number, number, number];
+  switch (type) {
+    case "lowPass": r = [(1 - c) / 2, 1 - c, (1 - c) / 2, 1 + alpha, -2 * c, 1 - alpha]; break;
+    case "highPass": r = [(1 + c) / 2, -(1 + c), (1 + c) / 2, 1 + alpha, -2 * c, 1 - alpha]; break;
+    case "bandPass": r = [alpha, 0, -alpha, 1 + alpha, -2 * c, 1 - alpha]; break;
+    case "notch": r = [1, -2 * c, 1, 1 + alpha, -2 * c, 1 - alpha]; break;
+    case "peaking": r = [1 + alpha * A, -2 * c, 1 - alpha * A, 1 + alpha / A, -2 * c, 1 - alpha / A]; break;
+    case "lowShelf":
+      r = [A * (A + 1 - (A - 1) * c + k), 2 * A * (A - 1 - (A + 1) * c), A * (A + 1 - (A - 1) * c - k),
+           A + 1 + (A - 1) * c + k, -2 * (A - 1 + (A + 1) * c), A + 1 + (A - 1) * c - k];
+      break;
+    case "highShelf":
+      r = [A * (A + 1 + (A - 1) * c + k), -2 * A * (A - 1 + (A + 1) * c), A * (A + 1 + (A - 1) * c - k),
+           A + 1 - (A - 1) * c + k, 2 * (A - 1 - (A + 1) * c), A + 1 - (A - 1) * c - k];
+      break;
+  }
+  const [b0, b1, b2, a0, a1, a2] = r;
+  return { b0: b0 / a0, b1: b1 / a0, b2: b2 / a0, a1: a1 / a0, a2: a2 / a0 };
+}
+
+/** |H(e^jω)| de um biquad. */
+export function biquadMagnitude(c: Biquad, frequency: number, sampleRate: number): number {
+  const w = (TWO_PI * frequency) / sampleRate;
+  const cos1 = Math.cos(w), sin1 = Math.sin(w), cos2 = Math.cos(2 * w), sin2 = Math.sin(2 * w);
+  const nr = c.b0 + c.b1 * cos1 + c.b2 * cos2;
+  const ni = -(c.b1 * sin1 + c.b2 * sin2);
+  const dr = 1 + c.a1 * cos1 + c.a2 * cos2;
+  const di = -(c.a1 * sin1 + c.a2 * sin2);
+  return Math.hypot(nr, ni) / Math.hypot(dr, di);
+}
+
+/** Processa um sinal com um biquad (TDF-II). */
+export function processBiquad(input: Float32Array, c: Biquad): Float32Array {
+  const out = new Float32Array(input.length);
+  let s1 = 0, s2 = 0;
+  for (let i = 0; i < input.length; i++) {
+    const x = input[i];
+    const y = c.b0 * x + s1;
+    s1 = c.b1 * x - c.a1 * y + s2;
+    s2 = c.b2 * x - c.a2 * y;
+    out[i] = y;
+  }
+  return out;
+}
+
+/** Filtro de um polo (exercício 14). */
+export function onePole(input: Float32Array, cutoff: number, sampleRate: number, highPass = false): Float32Array {
+  const a = 1 - Math.exp((-TWO_PI * cutoff) / sampleRate);
+  const out = new Float32Array(input.length);
+  let state = 0;
+  for (let i = 0; i < input.length; i++) {
+    state += a * (input[i] - state);
+    out[i] = highPass ? input[i] - state : state;
+  }
+  return out;
+}
+
+export type SvfMode = "lowPass" | "bandPass" | "highPass";
+
+/** SVF TPT (exercício 16) com o corte modulado por amostra: cutoffAt(n) devolve o corte da amostra n. */
+export function processSvf(input: Float32Array, sampleRate: number, q: number, mode: SvfMode, cutoffAt: (n: number) => number): Float32Array {
+  const out = new Float32Array(input.length);
+  const R2 = 1 / Math.max(0.1, q);
+  let s1 = 0, s2 = 0;
+  for (let n = 0; n < input.length; n++) {
+    const fc = clamp(cutoffAt(n), 10, 0.49 * sampleRate);
+    const g = Math.tan((Math.PI * fc) / sampleRate);
+    const h = 1 / (1 + R2 * g + g * g);
+    const hp = h * (input[n] - s1 * (g + R2) - s2);
+    const bp = g * hp + s1;
+    s1 = g * hp + bp;
+    const lp = g * bp + s2;
+    s2 = g * bp + lp;
+    out[n] = mode === "lowPass" ? lp : mode === "bandPass" ? bp : hp;
+  }
+  return out;
+}

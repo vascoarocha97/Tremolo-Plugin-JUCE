@@ -13,6 +13,9 @@ import { smoothingPage } from "./smoothing";
 import { delayLinePage } from "./delayLine";
 import { fractionalDelayPage } from "./fractionalDelay";
 import { feedbackDelayPage } from "./feedbackDelay";
+import { onePolePage } from "./onePole";
+import { biquadPage } from "./biquad";
+import { svfPage } from "./svf";
 
 export const pages: PageDef[] = [
   buffersPage,
@@ -26,4 +29,7 @@ export const pages: PageDef[] = [
   delayLinePage,
   fractionalDelayPage,
   feedbackDelayPage,
+  onePolePage,
+  biquadPage,
+  svfPage,
 ];
