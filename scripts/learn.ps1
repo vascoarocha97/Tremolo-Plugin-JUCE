@@ -352,7 +352,7 @@ function Invoke-Tests ($exercise, [string] $config)
     $stdoutTask = $process.StandardOutput.ReadToEndAsync()
     $stderrTask = $process.StandardError.ReadToEndAsync()
 
-    if (-not $process.WaitForExit(180000))
+    if (-not $process.WaitForExit(90000))
     {
         $process.Kill()
         return @{ timedOut = $true; cases = @(); exitCode = -1; consoleLog = $consoleLog; stderr = "" }
@@ -444,7 +444,7 @@ function Invoke-Check ($exercise, [switch] $Detailed, [switch] $Quiet)
 
     if ($result.timedOut)
     {
-        Write-Bad "  Os testes não terminaram em 3 minutos (ciclo infinito?)."
+        Write-Bad "  Os testes não terminaram em 90 segundos (ciclo infinito?)."
         Update-Progress $exercise "in_progress" 0 0 @("(timeout)")
         return @{ id = $exercise.id; title = $exercise.title; status = "in_progress"; passed = 0; total = 0; build = $true }
     }
